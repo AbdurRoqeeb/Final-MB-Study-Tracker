@@ -1,0 +1,6 @@
+{
+  "name": "MBBS Study Tracker",
+  "description": "An interactive study tracker and exam countdown tool for final-year MBBS clinical students preparing for their Final MB exams.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
