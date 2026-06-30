@@ -32,8 +32,14 @@ export default function App() {
     localStorage.setItem('MBBS_THEME', theme);
   }, [theme]);
 
-  // Simulated Date Anchor (starts on June 29, 2026 as per workspace local time)
+  // Simulated Date Anchor (defaults dynamically to current real-world date if within window)
   const [simulatedDate, setSimulatedDate] = useState<Date>(() => {
+    const today = new Date();
+    const minDate = new Date('2026-06-01T00:00:00');
+    const maxDate = new Date('2026-10-25T23:59:59');
+    if (today >= minDate && today <= maxDate) {
+      return today;
+    }
     return new Date('2026-06-29T12:00:00');
   });
 

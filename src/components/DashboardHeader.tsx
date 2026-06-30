@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Calendar, Clock, Flame, Sparkles, Sun, Moon } from 'lucide-react';
 
 interface DashboardHeaderProps {
@@ -16,6 +16,16 @@ export default function DashboardHeader({
 }: DashboardHeaderProps) {
   const examDate = new Date('2026-10-19T00:00:00');
   const targetDate = new Date('2026-10-12T00:00:00');
+
+  // Live ticking clock state
+  const [liveTime, setLiveTime] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setLiveTime(new Date());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   // Calculate day differences
   const getDaysRemaining = (from: Date, to: Date) => {
@@ -37,13 +47,14 @@ export default function DashboardHeader({
     });
   };
 
-  // Predefined date selections for quick jump
-  const quickDates = [
+  // Predefined date selections for quick jump (evaluated dynamically)
+  const quickDates = useMemo(() => [
+    { label: "Real Today ⚡", date: new Date() },
     { label: "June 29 (CommMed)", date: new Date('2026-06-29T12:00:00') },
     { label: "Aug 15 (Med Posting)", date: new Date('2026-08-15T12:00:00') },
     { label: "Sept 29 (3 Wks Left)", date: new Date('2026-09-29T12:00:00') },
     { label: "Oct 13 (Final Sprint)", date: new Date('2026-10-13T12:00:00') }
-  ];
+  ], []);
 
   const minDate = new Date('2026-06-01T00:00:00').getTime();
   const maxDate = new Date('2026-10-25T00:00:00').getTime();
@@ -66,6 +77,10 @@ export default function DashboardHeader({
             </span>
             <span className="bg-slate-800/80 text-slate-400 text-[10px] font-bold px-2 py-0.5 rounded border border-slate-700 uppercase tracking-tighter">
               Exam Date: October 19, 2026
+            </span>
+            <span className="bg-slate-800/80 text-slate-300 text-[10px] font-mono font-bold px-2 py-0.5 rounded border border-slate-700 uppercase tracking-tighter flex items-center gap-1.5">
+              <Clock className="w-3.5 h-3.5 text-amber-500 animate-pulse" />
+              Live: {liveTime.toLocaleTimeString()}
             </span>
             <button
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
@@ -120,14 +135,32 @@ export default function DashboardHeader({
       {/* Interactive Date Timeline Controller */}
       <div className="mt-5 pt-4 border-t border-slate-800/80">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-3">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <Calendar className="w-4 h-4 text-amber-500" />
             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
               Simulated Date Anchor:
             </span>
-            <span className="text-xs font-black text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
-              {formatDateString(simulatedDate)}
-            </span>
+            <div className="relative inline-block">
+              <span className="text-xs font-black text-amber-500 bg-amber-500/10 hover:bg-amber-500/20 px-2.5 py-1 rounded border border-amber-500/30 flex items-center gap-1.5 cursor-pointer transition-all">
+                {formatDateString(simulatedDate)}
+                <span className="text-[9px] opacity-75 font-bold uppercase tracking-tight text-amber-400/80">
+                  (Change 📅)
+                </span>
+              </span>
+              <input
+                type="date"
+                min="2026-06-01"
+                max="2026-10-25"
+                value={simulatedDate.toISOString().split('T')[0]}
+                onChange={(e) => {
+                  if (e.target.value) {
+                    setSimulatedDate(new Date(e.target.value + 'T12:00:00'));
+                  }
+                }}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                title="Select any custom simulated date from calendar"
+              />
+            </div>
           </div>
 
           {/* Quick Jumps */}
@@ -164,7 +197,7 @@ export default function DashboardHeader({
           <span className="text-[9px] font-bold text-slate-600 uppercase">Oct 25</span>
         </div>
         <p className="text-[9px] uppercase tracking-tighter text-slate-500 font-bold mt-2">
-          *Drag timeline to simulate exam proximity and trigger dynamic Study Plan weights!
+          *Drag timeline or click the date button to dynamically select any calendar date!
         </p>
       </div>
     </header>
