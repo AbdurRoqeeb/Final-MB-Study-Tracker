@@ -100,12 +100,12 @@ export default function FiltersSection({
         {/* Keyword Search */}
         <div className="relative">
           <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-1.5">
-            Search Topic / Lecturer
+            Search Syllabus Topics
           </label>
           <div className="relative">
             <input
               type="text"
-              placeholder="e.g. Stroke, Akintunde..."
+              placeholder="e.g. Stroke, Malaria, Infection..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full bg-slate-950 border border-slate-800 focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/30 text-xs rounded-lg pl-9 pr-4 py-2 text-slate-200 outline-none transition-all placeholder:text-slate-600"

@@ -422,9 +422,6 @@ export default function DailyStudySchedule({
                       <h5 className={`text-[11px] font-bold leading-snug ${isDone ? "line-through text-slate-500" : "text-white"}`}>
                         {topic.topicName}
                       </h5>
-                      <span className="text-[9px] text-slate-500 mt-0.5 block">
-                        Lecturer: <strong className="text-slate-400">{topic.lecturer}</strong>
-                      </span>
                     </div>
                   </div>
                 );

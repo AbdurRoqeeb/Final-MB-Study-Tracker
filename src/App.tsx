@@ -145,8 +145,7 @@ export default function App() {
       // Keyword match
       const normQuery = searchQuery.toLowerCase().trim();
       const matchSearch = searchQuery === "" ||
-        t.topicName.toLowerCase().includes(normQuery) ||
-        t.lecturer.toLowerCase().includes(normQuery);
+        t.topicName.toLowerCase().includes(normQuery);
 
       // Subject match
       const matchSubject = selectedSubject === "All" || t.subject === selectedSubject;

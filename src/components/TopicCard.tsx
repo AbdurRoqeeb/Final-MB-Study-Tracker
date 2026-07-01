@@ -9,7 +9,7 @@ interface TopicCardProps {
 }
 
 export default function TopicCard({ topic, onStatusChange }: TopicCardProps) {
-  const { id, subject, batch, topicName, lecturer, subspecialty, priority, highYield, status } = topic;
+  const { id, subject, batch, topicName, subspecialty, priority, highYield, status } = topic;
 
   // Cycle statuses: NOT_STARTED -> IN_PROGRESS -> DONE -> NOT_STARTED
   const handleStatusCycle = () => {
@@ -103,11 +103,6 @@ export default function TopicCard({ topic, onStatusChange }: TopicCardProps) {
         }`}>
           {topicName}
         </h4>
-
-        {/* Lecturer Info */}
-        <p className="text-[10px] text-slate-500 mt-1 font-medium">
-          Lecturer: <span className="text-slate-300 font-semibold">{lecturer}</span>
-        </p>
       </div>
 
       {/* Right side: Priority Badge & Cycle Status Action */}
