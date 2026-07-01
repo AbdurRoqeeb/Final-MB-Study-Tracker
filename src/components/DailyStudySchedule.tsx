@@ -107,18 +107,18 @@ export default function DailyStudySchedule({
       });
     };
 
-    // 1. CommMed: 75% goes to days [0, 34] (Weeks 1-5 active posting), 25% to days [35, 104] (Medicine & Surgery postings)
-    const cmSplit = Math.floor(commMed.length * 0.75);
+    // 1. CommMed: 92% goes to days [0, 34] (Weeks 1-5 active posting), 8% goes to days [35, 104] (Medicine & Surgery postings)
+    const cmSplit = Math.floor(commMed.length * 0.92);
     distribute(commMed, [cmSplit], [[0, 34], [35, 104]]);
 
-    // 2. Medicine: 15% to days [0, 34] (CommMed phase preview), 70% to days [35, 69] (Weeks 6-10 active posting), 15% to days [70, 104] (Surgery phase review)
-    const medSplit1 = Math.floor(medicine.length * 0.15);
-    const medSplit2 = Math.floor(medicine.length * 0.85);
+    // 2. Medicine: 30% to days [0, 34] (preview during CommMed posting), 65% to days [35, 69] (Weeks 6-10 active posting, total 95%), 5% to days [70, 104] (Surgery phase review)
+    const medSplit1 = Math.floor(medicine.length * 0.30);
+    const medSplit2 = Math.floor(medicine.length * 0.95);
     distribute(medicine, [medSplit1, medSplit2], [[0, 34], [35, 69], [70, 104]]);
 
-    // 3. Surgery: 15% to days [0, 34] (CommMed phase preview), 15% to days [35, 69] (Medicine phase preview), 70% to days [70, 104] (Weeks 11-15 active posting)
-    const surgSplit1 = Math.floor(surgery.length * 0.15);
-    const surgSplit2 = Math.floor(surgery.length * 0.30);
+    // 3. Surgery: 10% to days [0, 34] (preview during CommMed posting), 25% to days [35, 69] (preview during Medicine posting, total 35%), 65% to days [70, 104] (Weeks 11-15 active posting, total 100%)
+    const surgSplit1 = Math.floor(surgery.length * 0.10);
+    const surgSplit2 = Math.floor(surgery.length * 0.35);
     distribute(surgery, [surgSplit1, surgSplit2], [[0, 34], [35, 69], [70, 104]]);
 
     return schedules;

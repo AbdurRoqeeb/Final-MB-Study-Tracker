@@ -1,1411 +1,765 @@
 import { SubjectType, StudyPriority, Topic, StudyStatus } from '../types';
 
-// Raw clinical syllabus dataset directly transcribed from MBBS postings (LAUTECH, MB4)
-export const rawSyllabusData: Omit<Topic, 'id' | 'status'>[] = [
-  // ================= MEDICINE 1 (M1) =================
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M1",
-    topicName: "Introduction to Medicine & Clinical Methods",
-    lecturer: "Prof. O.E. Ayodele",
-    subspecialty: "General/Multisystem",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 1,
-    highYield: false
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M1",
-    topicName: "Approach to Cardiovascular Diseases",
-    lecturer: "Prof. A.A. Akintunde",
-    subspecialty: "Cardiology",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 1,
-    highYield: true
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M1",
-    topicName: "Hypertension & Hypertensive Emergencies",
-    lecturer: "Dr. Shitu",
-    subspecialty: "Cardiology",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 1,
-    highYield: true
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M1",
-    topicName: "Rheumatic Heart Disease & Infective Endocarditis",
-    lecturer: "Prof. A.A. Akintunde",
-    subspecialty: "Cardiology",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 1,
-    highYield: true
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M1",
-    topicName: "Approach to Kidney Diseases",
-    lecturer: "Prof. O.E. Ayodele",
-    subspecialty: "Nephrology",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 1,
-    highYield: true
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M1",
-    topicName: "Chronic Kidney Disease (CKD)",
-    lecturer: "Prof. O.E. Ayodele",
-    subspecialty: "Nephrology",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 1,
-    highYield: true
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M1",
-    topicName: "Approach to Endocrine Disorders",
-    lecturer: "Prof. M.A. Olamoyegun",
-    subspecialty: "Endocrinology",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 1,
-    highYield: true
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M1",
-    topicName: "Diabetes Mellitus: Clinical Presentation & Diagnosis",
-    lecturer: "Prof. M.A. Olamoyegun",
-    subspecialty: "Endocrinology",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 1,
-    highYield: true
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M1",
-    topicName: "Approach to Neurological Diseases",
-    lecturer: "Dr. Shitu",
-    subspecialty: "Neurology",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 1,
-    highYield: true
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M1",
-    topicName: "Approach to Stroke & TIA",
-    lecturer: "Dr. Shitu",
-    subspecialty: "Neurology",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 1,
-    highYield: true
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M1",
-    topicName: "Approach to Gastrointestinal Diseases",
-    lecturer: "Dr. M.M. Oje",
-    subspecialty: "GI & Hepatology",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 1,
-    highYield: false
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M1",
-    topicName: "Viral Hepatitis Profile",
-    lecturer: "Dr. M.M. Oje",
-    subspecialty: "GI & Hepatology",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 1,
-    highYield: false
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M1",
-    topicName: "Approach to Respiratory Diseases & Cough",
-    lecturer: "Prof. M.O. Tanimowo",
-    subspecialty: "Respiratory",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 1,
-    highYield: false
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M1",
-    topicName: "Pulmonary Tuberculosis (PTB)",
-    lecturer: "Prof. M.O. Tanimowo",
-    subspecialty: "Respiratory",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 1,
-    highYield: false
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M1",
-    topicName: "Malaria & Severe Plasmodium Infection",
-    lecturer: "Prof. A.A. Akintunde",
-    subspecialty: "Infectious Disease",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 1,
-    highYield: false
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M1",
-    topicName: "Sepsis & Septic Shock Management",
-    lecturer: "Dr. O. Oni",
-    subspecialty: "Infectious Disease",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 1,
-    highYield: false
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M1",
-    topicName: "Anaemias & Haemoglobinopathies",
-    lecturer: "Dr. G.M. Israel",
-    subspecialty: "Haematology",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 1,
-    highYield: false
-  },
+// Complete lists of raw clinical syllabus topics directly transcribed from the user's syllabus.
+// This matches 100% of the topics under medicine, surgery, and community medicine.
 
-  // ================= MEDICINE 2 (M2) =================
-  // Medicine 2 and Medicine 3 topics rank higher (batchPriority: 2) than M1
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M2",
-    topicName: "Heart Failure: Management & Diagnostics",
-    lecturer: "Prof. A.A. Akintunde",
-    subspecialty: "Cardiology",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 2,
-    highYield: true
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M2",
-    topicName: "Valvular Heart Diseases",
-    lecturer: "Prof. A.A. Akintunde",
-    subspecialty: "Cardiology",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 2,
-    highYield: true
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M2",
-    topicName: "Approach to Stroke & TIA", // Duplicate to test deduplication (M2 is higher than M1)
-    lecturer: "Dr. O. Oni", // Different lecturer to test merge
-    subspecialty: "Neurology",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 2,
-    highYield: true
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M2",
-    topicName: "Acute Kidney Injury (AKI)",
-    lecturer: "Dr. Shitu",
-    subspecialty: "Nephrology",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 2,
-    highYield: true
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M2",
-    topicName: "Glomerulonephritis & Nephrotic Syndrome",
-    lecturer: "Prof. O.E. Ayodele",
-    subspecialty: "Nephrology",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 2,
-    highYield: true
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M2",
-    topicName: "Acute & Chronic Complications of DM",
-    lecturer: "Prof. M.A. Olamoyegun",
-    subspecialty: "Endocrinology",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 2,
-    highYield: true
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M2",
-    topicName: "Thyroid Disorders (Thyrotoxicosis & Hypothyroidism)",
-    lecturer: "Prof. M.A. Olamoyegun",
-    subspecialty: "Endocrinology",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 2,
-    highYield: true
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M2",
-    topicName: "Adrenal Gland Disorders & Cushing's",
-    lecturer: "Prof. M.A. Olamoyegun",
-    subspecialty: "Endocrinology",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 2,
-    highYield: true
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M2",
-    topicName: "Epilepsy & Seizure Disorders",
-    lecturer: "Dr. Shitu",
-    subspecialty: "Neurology",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 2,
-    highYield: true
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M2",
-    topicName: "Peptic Ulcer Disease & GERD",
-    lecturer: "Dr. M.M. Oje",
-    subspecialty: "GI & Hepatology",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 2,
-    highYield: false
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M2",
-    topicName: "Cirrhosis & Portal Hypertension",
-    lecturer: "Dr. M.M. Oje",
-    subspecialty: "GI & Hepatology",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 2,
-    highYield: false
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M2",
-    topicName: "Asthma & Bronchial Hyperresponsiveness",
-    lecturer: "Prof. M.O. Tanimowo",
-    subspecialty: "Respiratory",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 2,
-    highYield: false
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M2",
-    topicName: "Pneumonias (CAP, HAP, Aspiration)",
-    lecturer: "Dr. Shitu",
-    subspecialty: "Respiratory",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 2,
-    highYield: false
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M2",
-    topicName: "Superficial Fungal Infections & Scabies",
-    lecturer: "Dr. G.M. Israel",
-    subspecialty: "Dermatology & Venereology",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 2,
-    highYield: false
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M2",
-    topicName: "Deep Fungal & Parasitic Skin Infections",
-    lecturer: "Dr. G.M. Israel",
-    subspecialty: "Dermatology & Venereology",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 2,
-    highYield: false
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M2",
-    topicName: "Papulosquamous Disorders & Psoriasis",
-    lecturer: "Dr. G.M. Israel",
-    subspecialty: "Dermatology & Venereology",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 2,
-    highYield: false
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M2",
-    topicName: "Immunobullous Skin Disorders",
-    lecturer: "Dr. G.M. Israel",
-    subspecialty: "Dermatology & Venereology",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 2,
-    highYield: false
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M2",
-    topicName: "Cutaneous Drug Reactions",
-    lecturer: "Dr. G.M. Israel",
-    subspecialty: "Dermatology & Venereology",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 2,
-    highYield: false
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M2",
-    topicName: "Leprosy & Mycobacterial Diseases",
-    lecturer: "Dr. G.M. Israel",
-    subspecialty: "Dermatology & Venereology",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 2,
-    highYield: false
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M2",
-    topicName: "HIV/AIDS & Opportunistic Infections",
-    lecturer: "Dr. G.M. Israel",
-    subspecialty: "Infectious Disease",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 2,
-    highYield: false
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M2",
-    topicName: "Tetanus & Rabies Management",
-    lecturer: "Dr. G.M. Israel",
-    subspecialty: "Infectious Disease",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 2,
-    highYield: false
-  },
-
-  // ================= MEDICINE 3 (M3) =================
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M3",
-    topicName: "Ischaemic Heart Disease",
-    lecturer: "Prof. A.A. Akintunde",
-    subspecialty: "Cardiology",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 3,
-    highYield: true
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M3",
-    topicName: "Arrhythmias (Brady- & Tachyarrhythmias)",
-    lecturer: "Prof. A.A. Akintunde",
-    subspecialty: "Cardiology",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 3,
-    highYield: true
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M3",
-    topicName: "Kidney Replacement Therapy & Dialysis",
-    lecturer: "Dr. Shitu",
-    subspecialty: "Nephrology",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 3,
-    highYield: true
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M3",
-    topicName: "Kidney Transplantation Overview",
-    lecturer: "Dr. O. Oni",
-    subspecialty: "Nephrology",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 3,
-    highYield: true
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M3",
-    topicName: "Pituitary & Neuroendocrinology",
-    lecturer: "Prof. M.A. Olamoyegun",
-    subspecialty: "Endocrinology",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 3,
-    highYield: true
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M3",
-    topicName: "Meningitis & Encephalitis",
-    lecturer: "Dr. O. Oni",
-    subspecialty: "Neurology",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 3,
-    highYield: true
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M3",
-    topicName: "Peripheral Neuropathies & Guillain-Barré",
-    lecturer: "Dr. G.M. Israel",
-    subspecialty: "Neurology",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 3,
-    highYield: true
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M3",
-    topicName: "Headache Syndromes (Migraine, Tension, Cluster)",
-    lecturer: "Dr. Shitu",
-    subspecialty: "Neurology",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 3,
-    highYield: true
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M3",
-    topicName: "Dementia & Cognitive Decline",
-    lecturer: "Dr. O. Oni",
-    subspecialty: "Neurology",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 3,
-    highYield: true
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M3",
-    topicName: "Malabsorption Syndromes",
-    lecturer: "Dr. M.M. Oje",
-    subspecialty: "GI & Hepatology",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 3,
-    highYield: false
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M3",
-    topicName: "Inflammatory Bowel Disease (Crohn's & UC)",
-    lecturer: "Dr. Shitu",
-    subspecialty: "GI & Hepatology",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 3,
-    highYield: false
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M3",
-    topicName: "Acute Liver Failure",
-    lecturer: "Dr. M.M. Oje",
-    subspecialty: "GI & Hepatology",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 3,
-    highYield: false
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M3",
-    topicName: "Gastrointestinal Malignancies",
-    lecturer: "Dr. M.M. Oje",
-    subspecialty: "GI & Hepatology",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 3,
-    highYield: false
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M3",
-    topicName: "Chronic Obstructive Pulmonary Disease (COPD)",
-    lecturer: "Prof. M.O. Tanimowo",
-    subspecialty: "Respiratory",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 3,
-    highYield: false
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M3",
-    topicName: "Carcinoma of the Lungs",
-    lecturer: "Dr. O. Oni",
-    subspecialty: "Respiratory",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 3,
-    highYield: false
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M3",
-    topicName: "Rheumatoid Arthritis & SLE",
-    lecturer: "Dr. G.M. Israel",
-    subspecialty: "Rheumatology",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 3,
-    highYield: false
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M3",
-    topicName: "Gouty Arthritis & Osteoarthritis",
-    lecturer: "Dr. G.M. Israel",
-    subspecialty: "Rheumatology",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 3,
-    highYield: false
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M3",
-    topicName: "Evaluation of the Elderly & Geriatrics",
-    lecturer: "Dr. Raheem",
-    subspecialty: "General/Multisystem",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 3,
-    highYield: false
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M3",
-    topicName: "Clinical Ethics & Reflective Practice",
-    lecturer: "Prof. M.A. Olamoyegun",
-    subspecialty: "General/Multisystem",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 3,
-    highYield: false
-  },
-
-  // ================= SURGERY 1 (S1) =================
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S1",
-    topicName: "History Taking & Physical Examination in Surgery",
-    lecturer: "Dr. Akanbi",
-    subspecialty: "General Surgery",
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 1,
-    highYield: false
-  },
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S1",
-    topicName: "Surgical Wound Management & Healing",
-    lecturer: "Dr. Akinloye",
-    subspecialty: "General Surgery",
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 1,
-    highYield: false
-  },
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S1",
-    topicName: "Surgical Infections & Antibiotic Stewardship",
-    lecturer: "Dr. Otiti",
-    subspecialty: "General Surgery",
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 1,
-    highYield: false
-  },
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S1",
-    topicName: "Pre- and Post-operative Care",
-    lecturer: "Dr. Olatide",
-    subspecialty: "General Surgery",
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 1,
-    highYield: false
-  },
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S1",
-    topicName: "Haemostasis, Bleeding Disorders & Transfusion",
-    lecturer: "Dr. Olatide",
-    subspecialty: "General Surgery",
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 1,
-    highYield: false
-  },
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S1",
-    topicName: "Sutures, Anastomosis & Surgical Energy",
-    lecturer: "Dr. Idowu",
-    subspecialty: "General Surgery",
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 1,
-    highYield: false
-  },
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S1",
-    topicName: "Shock, Fluid & Electrolyte Resuscitation",
-    lecturer: "Dr. Akanbi",
-    subspecialty: "General Surgery",
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 1,
-    highYield: false
-  },
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S1",
-    topicName: "Cardiopulmonary Resuscitation (CPR)",
-    lecturer: "Dr. Raji",
-    subspecialty: "General Surgery",
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 1,
-    highYield: false
-  },
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S1",
-    topicName: "Management of the Breast & Breast Lumps",
-    lecturer: "Dr. Otiti",
-    subspecialty: "General Surgery", // Breast lump is highYield
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 1,
-    highYield: true
-  },
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S1",
-    topicName: "Urological Emergencies (Retention, Torsion)",
-    lecturer: "Dr. Odeyemi",
-    subspecialty: "Urology",
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 1,
-    highYield: true
-  },
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S1",
-    topicName: "Intestinal Obstruction & Acute Abdomen",
-    lecturer: "Dr. Akanbi",
-    subspecialty: "General Surgery", // GI topic
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 1,
-    highYield: true
-  },
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S1",
-    topicName: "Anorectal Diseases (Haemorrhoids, Fistulae)",
-    lecturer: "Dr. Akanbi",
-    subspecialty: "General Surgery",
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 1,
-    highYield: true
-  },
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S1",
-    topicName: "Esophageal Diseases & Achalasia",
-    lecturer: "Dr. Adedayo",
-    subspecialty: "General Surgery",
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 1,
-    highYield: true
-  },
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S1",
-    topicName: "Liver Injury & Biliary Tract Diseases",
-    lecturer: "Dr. Idowu",
-    subspecialty: "General Surgery",
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 1,
-    highYield: true
-  },
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S1",
-    topicName: "Paediatric Surgical Emergencies",
-    lecturer: "Dr. Akinloye",
-    subspecialty: "Paediatric Surgery",
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 1,
-    highYield: false
-  },
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S1",
-    topicName: "Burns, Scalds & Contractures Management",
-    lecturer: "Dr. Onilede",
-    subspecialty: "Plastics & Burns",
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 1,
-    highYield: false
-  },
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S1",
-    topicName: "Varicose Veins & Deep Vein Thrombosis",
-    lecturer: "Dr. Adedayo",
-    subspecialty: "Vascular",
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 1,
-    highYield: false
-  },
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S1",
-    topicName: "Head & Neck Masses & Thyroid Swellings",
-    lecturer: "Dr. Adedayo",
-    subspecialty: "ENT & Head/Neck",
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 1,
-    highYield: false
-  },
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S1",
-    topicName: "Principles of Anaesthesia & Pain Management",
-    lecturer: "Dr. Raji",
-    subspecialty: "Anaesthesia",
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 1,
-    highYield: false
-  },
-
-  // ================= SURGERY 2 (S2) =================
-  // Surgery 2 and Surgery 3 topics rank higher (batchPriority: 2) than S1
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S2",
-    topicName: "Carcinoma of the Breast",
-    lecturer: "Dr. Otiti",
-    subspecialty: "General Surgery",
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 2,
-    highYield: true
-  },
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S2",
-    topicName: "Bone Fractures and Dislocations",
-    lecturer: "Dr. Olatide",
-    subspecialty: "Orthopaedics & Trauma",
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 2,
-    highYield: true
-  },
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S2",
-    topicName: "Bone Tumours (Osteosarcoma & Metastases)",
-    lecturer: "Dr. Olatide",
-    subspecialty: "Orthopaedics & Trauma",
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 2,
-    highYield: true
-  },
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S2",
-    topicName: "Low Back Pain & Spinal Deformities",
-    lecturer: "Prof. Ajaga",
-    subspecialty: "Orthopaedics & Trauma",
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 2,
-    highYield: true
-  },
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S2",
-    topicName: "Amputations & Orthopaedic Rehabilitation",
-    lecturer: "Dr. Otiti",
-    subspecialty: "Orthopaedics & Trauma",
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 2,
-    highYield: true
-  },
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S2",
-    topicName: "Angular Deformities of the Lower Limb",
-    lecturer: "Dr. Olanipekun",
-    subspecialty: "Orthopaedics & Trauma",
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 2,
-    highYield: true
-  },
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S2",
-    topicName: "Spinal Cord Injuries & Spine Trauma",
-    lecturer: "Dr. Adeleke",
-    subspecialty: "Neurosurgery",
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 2,
-    highYield: false
-  },
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S2",
-    topicName: "Nervous System Malformations & Hydrocephalus",
-    lecturer: "Dr. Adeleke",
-    subspecialty: "Neurosurgery",
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 2,
-    highYield: false
-  },
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S2",
-    topicName: "Vascular Lesions & Brain Tumours",
-    lecturer: "Dr. Adeleke",
-    subspecialty: "Neurosurgery",
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 2,
-    highYield: false
-  },
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S2",
-    topicName: "Neonatal Intestinal Obstruction",
-    lecturer: "Dr. Akanbi",
-    subspecialty: "Paediatric Surgery",
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 2,
-    highYield: false
-  },
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S2",
-    topicName: "Congenital Limb & Surgical Anomalies",
-    lecturer: "Prof. Ajaga",
-    subspecialty: "Paediatric Surgery",
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 2,
-    highYield: false
-  },
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S2",
-    topicName: "Cancer Chemotherapy & Palliative Care",
-    lecturer: "Dr. Akinloye",
-    subspecialty: "Oncology",
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 2,
-    highYield: false
-  },
-
-  // ================= SURGERY 3 (S3) =================
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S3",
-    topicName: "Benign & Malignant Prostate Diseases",
-    lecturer: "Dr. Odeyemi",
-    subspecialty: "Urology",
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 3,
-    highYield: true
-  },
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S3",
-    topicName: "Scrotal Swellings (Hydrocele, Varicocele, Hernias)",
-    lecturer: "Dr. Idowu",
-    subspecialty: "Urology",
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 3,
-    highYield: true
-  },
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S3",
-    topicName: "Urinary Calculi (Urolithiasis)",
-    lecturer: "Dr. Idowu",
-    subspecialty: "Urology",
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 3,
-    highYield: true
-  },
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S3",
-    topicName: "Peritonitis & Abdominal Sepsis",
-    lecturer: "Dr. Akanbi",
-    subspecialty: "General Surgery",
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 3,
-    highYield: true
-  },
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S3",
-    topicName: "Peptic Ulcer Disease & Gastric Outflow",
-    lecturer: "Prof. Oguntola",
-    subspecialty: "General Surgery",
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 3,
-    highYield: true
-  },
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S3",
-    topicName: "Colorectal Malignancies",
-    lecturer: "Dr. Akinloye",
-    subspecialty: "General Surgery",
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 3,
-    highYield: true
-  },
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S3",
-    topicName: "Acute & Chronic Osteomyelitis",
-    lecturer: "Dr. Olanipekun",
-    subspecialty: "Orthopaedics & Trauma",
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 3,
-    highYield: true
-  },
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S3",
-    topicName: "Head Injuries & Extradural Haematoma",
-    lecturer: "Dr. Adeleke",
-    subspecialty: "Neurosurgery",
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 3,
-    highYield: false
-  },
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S3",
-    topicName: "Grafts & Skin Tumours",
-    lecturer: "Dr. Onilede",
-    subspecialty: "Plastics & Burns",
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 3,
-    highYield: false
-  },
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S3",
-    topicName: "Overview of Common Cardiothoracic Cases",
-    lecturer: "Dr. Olatide",
-    subspecialty: "Cardiothoracic",
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 3,
-    highYield: false
-  },
-
-  // ================= COMMUNITY MEDICINE 1 (CM1) =================
-  // Community Medicine is highest priority (StudyPriority.HIGH - active posting)
-  {
-    subject: SubjectType.COMMUNITY_MEDICINE,
-    batch: "CM1",
-    topicName: "Definitions & Scope of Epidemiology",
-    lecturer: "Dr. Israel",
-    subspecialty: "Epidemiology",
-    priority: StudyPriority.HIGH,
-    batchPriority: 1,
-    highYield: true
-  },
-  {
-    subject: SubjectType.COMMUNITY_MEDICINE,
-    batch: "CM1",
-    topicName: "Epidemiologic Methods & Designs",
-    lecturer: "Dr. Israel",
-    subspecialty: "Epidemiology",
-    priority: StudyPriority.HIGH,
-    batchPriority: 1,
-    highYield: true
-  },
-  {
-    subject: SubjectType.COMMUNITY_MEDICINE,
-    batch: "CM1",
-    topicName: "Introduction to Medical Statistics & Demography",
-    lecturer: "Prof. Egbewale",
-    subspecialty: "Biostatistics & Research Methods",
-    priority: StudyPriority.HIGH,
-    batchPriority: 1,
-    highYield: true
-  },
-  {
-    subject: SubjectType.COMMUNITY_MEDICINE,
-    batch: "CM1",
-    topicName: "Research Methods & Thesis Formulation",
-    lecturer: "Prof. Durowade",
-    subspecialty: "Biostatistics & Research Methods",
-    priority: StudyPriority.HIGH,
-    batchPriority: 1,
-    highYield: true
-  },
-  {
-    subject: SubjectType.COMMUNITY_MEDICINE,
-    batch: "CM1",
-    topicName: "Concept of Primary Health Care (PHC)",
-    lecturer: "Dr. Ilori",
-    subspecialty: "Primary Health Care",
-    priority: StudyPriority.HIGH,
-    batchPriority: 1,
-    highYield: true
-  },
-  {
-    subject: SubjectType.COMMUNITY_MEDICINE,
-    batch: "CM1",
-    topicName: "PHC Implementation & Health Posts",
-    lecturer: "Dr. Idowu",
-    subspecialty: "Primary Health Care",
-    priority: StudyPriority.HIGH,
-    batchPriority: 1,
-    highYield: true
-  },
-  {
-    subject: SubjectType.COMMUNITY_MEDICINE,
-    batch: "CM1",
-    topicName: "Nigeria Health System Organization",
-    lecturer: "Dr. Ilori",
-    subspecialty: "Primary Health Care",
-    priority: StudyPriority.HIGH,
-    batchPriority: 1,
-    highYield: true
-  },
-  {
-    subject: SubjectType.COMMUNITY_MEDICINE,
-    batch: "CM1",
-    topicName: "Maternal, Newborn & Child Health (MNCH)",
-    lecturer: "Prof. Olugbenga-Bello",
-    subspecialty: "Reproductive & Child Health",
-    priority: StudyPriority.HIGH,
-    batchPriority: 1,
-    highYield: true
-  },
-  {
-    subject: SubjectType.COMMUNITY_MEDICINE,
-    batch: "CM1",
-    topicName: "Public Health Nutrition & Food Security",
-    lecturer: "Dr. Ige",
-    subspecialty: "Public Health Nutrition",
-    priority: StudyPriority.HIGH,
-    batchPriority: 1,
-    highYield: false
-  },
-  {
-    subject: SubjectType.COMMUNITY_MEDICINE,
-    batch: "CM1",
-    topicName: "Components of Environmental Health",
-    lecturer: "Dr. Olarewaju",
-    subspecialty: "Environmental Health",
-    priority: StudyPriority.HIGH,
-    batchPriority: 1,
-    highYield: false
-  },
-  {
-    subject: SubjectType.COMMUNITY_MEDICINE,
-    batch: "CM1",
-    topicName: "Occupational Health & Industrial Hazards",
-    lecturer: "Dr. Israel",
-    subspecialty: "Occupational Health",
-    priority: StudyPriority.HIGH,
-    batchPriority: 1,
-    highYield: false
-  },
-  {
-    subject: SubjectType.COMMUNITY_MEDICINE,
-    batch: "CM1",
-    topicName: "Medical Sociology & Public Health History",
-    lecturer: "Dr. Ige",
-    subspecialty: "Medical Sociology",
-    priority: StudyPriority.HIGH,
-    batchPriority: 1,
-    highYield: false
-  },
-  {
-    subject: SubjectType.COMMUNITY_MEDICINE,
-    batch: "CM1",
-    topicName: "Health Education & Social Marketing",
-    lecturer: "Dr. Ilori",
-    subspecialty: "Primary Health Care",
-    priority: StudyPriority.HIGH,
-    batchPriority: 1,
-    highYield: false
-  },
-
-  // ================= COMMUNITY MEDICINE 2 (CM2) =================
-  {
-    subject: SubjectType.COMMUNITY_MEDICINE,
-    batch: "CM2",
-    topicName: "Infectious Disease Epidemiology",
-    lecturer: "Dr. Israel",
-    subspecialty: "Epidemiology",
-    priority: StudyPriority.HIGH,
-    batchPriority: 2,
-    highYield: true
-  },
-  {
-    subject: SubjectType.COMMUNITY_MEDICINE,
-    batch: "CM2",
-    topicName: "Epidemiology of Non-communicable Diseases",
-    lecturer: "Dr. Israel",
-    subspecialty: "Epidemiology",
-    priority: StudyPriority.HIGH,
-    batchPriority: 2,
-    highYield: true
-  },
-  {
-    subject: SubjectType.COMMUNITY_MEDICINE,
-    batch: "CM2",
-    topicName: "Disaster Management & Preparedness",
-    lecturer: "Dr. Bada",
-    subspecialty: "Epidemiology",
-    priority: StudyPriority.HIGH,
-    batchPriority: 2,
-    highYield: true
-  },
-  {
-    subject: SubjectType.COMMUNITY_MEDICINE,
-    batch: "CM2",
-    topicName: "Inferential Statistics & Hypothesis Testing",
-    lecturer: "Prof. Egbewale",
-    subspecialty: "Biostatistics & Research Methods",
-    priority: StudyPriority.HIGH,
-    batchPriority: 2,
-    highYield: true
-  },
-  {
-    subject: SubjectType.COMMUNITY_MEDICINE,
-    batch: "CM2",
-    topicName: "Health Care Financing & NHIS",
-    lecturer: "Dr. Akande",
-    subspecialty: "Health Management",
-    priority: StudyPriority.HIGH,
-    batchPriority: 2,
-    highYield: false
-  },
-  {
-    subject: SubjectType.COMMUNITY_MEDICINE,
-    batch: "CM2",
-    topicName: "Community Mental Health & Dental Care",
-    lecturer: "Dr. Ilori",
-    subspecialty: "Primary Health Care",
-    priority: StudyPriority.HIGH,
-    batchPriority: 2,
-    highYield: false
-  },
-  {
-    subject: SubjectType.COMMUNITY_MEDICINE,
-    batch: "CM2",
-    topicName: "Family Planning & Contraceptive Methods",
-    lecturer: "Prof. Olugbenga-Bello",
-    subspecialty: "Reproductive & Child Health",
-    priority: StudyPriority.HIGH,
-    batchPriority: 2,
-    highYield: true
-  },
-  {
-    subject: SubjectType.COMMUNITY_MEDICINE,
-    batch: "CM2",
-    topicName: "STIs, HIV & Prevention of Mother to Child",
-    lecturer: "Prof. Olugbenga-Bello",
-    subspecialty: "Reproductive & Child Health",
-    priority: StudyPriority.HIGH,
-    batchPriority: 2,
-    highYield: true
-  },
-  {
-    subject: SubjectType.COMMUNITY_MEDICINE,
-    batch: "CM2",
-    topicName: "Nutritional Assessment & Malnutrition Control",
-    lecturer: "Dr. Ige",
-    subspecialty: "Public Health Nutrition",
-    priority: StudyPriority.HIGH,
-    batchPriority: 2,
-    highYield: false
-  },
-  {
-    subject: SubjectType.COMMUNITY_MEDICINE,
-    batch: "CM2",
-    topicName: "Solid & Liquid Waste Management",
-    lecturer: "Dr. Olarewaju",
-    subspecialty: "Environmental Health",
-    priority: StudyPriority.HIGH,
-    batchPriority: 2,
-    highYield: false
-  },
-  {
-    subject: SubjectType.COMMUNITY_MEDICINE,
-    batch: "CM2",
-    topicName: "Principles of Medical Ethics",
-    lecturer: "Prof. Olugbenga-Bello",
-    subspecialty: "Medical Ethics",
-    priority: StudyPriority.HIGH,
-    batchPriority: 2,
-    highYield: false
-  },
-  {
-    subject: SubjectType.COMMUNITY_MEDICINE,
-    batch: "CM2",
-    topicName: "International Health & Global Health Security",
-    lecturer: "Dr. Ige",
-    subspecialty: "International Health",
-    priority: StudyPriority.HIGH,
-    batchPriority: 2,
-    highYield: false
-  },
-  {
-    subject: SubjectType.COMMUNITY_MEDICINE,
-    batch: "CM2",
-    topicName: "Demography & Population Dynamics",
-    lecturer: "Prof. Olugbenga-Bello",
-    subspecialty: "Demography",
-    priority: StudyPriority.HIGH,
-    batchPriority: 2,
-    highYield: false
-  },
-  {
-    subject: SubjectType.COMMUNITY_MEDICINE,
-    batch: "CM2",
-    topicName: "Public Health Laboratory & Museum Use",
-    lecturer: "Dr. Akindele",
-    subspecialty: "Biostatistics & Research Methods",
-    priority: StudyPriority.HIGH,
-    batchPriority: 2,
-    highYield: false
-  },
-  // --- ADDITIONAL REQUISITE SUBSPECIALTIES TOPICS ---
-  // Internal Medicine - Psychiatry
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M3",
-    topicName: "Major Depressive Disorder & Suicide Prevention",
-    lecturer: "Dr. Lasebikan",
-    subspecialty: "Psychiatry",
-    priority: StudyPriority.ADVANCE_PREP,
-    batchPriority: 3,
-    highYield: true
-  },
-  {
-    subject: SubjectType.MEDICINE,
-    batch: "M3",
-    topicName: "Schizophrenia, Acute Psychosis & Delirium",
-    lecturer: "Dr. Lasebikan",
-    subspecialty: "Psychiatry",
-    priority: SubjectType.MEDICINE ? StudyPriority.ADVANCE_PREP : StudyPriority.UPCOMING,
-    batchPriority: 3,
-    highYield: true
-  },
-  // Surgery - Ophthalmology
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S3",
-    topicName: "Cataracts, Glaucoma & Refractive Errors",
-    lecturer: "Dr. Olayemi",
-    subspecialty: "Opthalmology",
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 3,
-    highYield: true
-  },
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S3",
-    topicName: "Ocular Trauma & Red Eye Emergencies",
-    lecturer: "Dr. Olayemi",
-    subspecialty: "Opthalmology",
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 3,
-    highYield: false
-  },
-  // Surgery - Radiology
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S3",
-    topicName: "Introduction to Clinical Radiology & Chest X-Ray Interpretation",
-    lecturer: "Dr. Adebayo",
-    subspecialty: "Radiology",
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 3,
-    highYield: false
-  },
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S3",
-    topicName: "Ultrasound, CT, and MRI in Surgical Diagnostics",
-    lecturer: "Dr. Adebayo",
-    subspecialty: "Radiology",
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 3,
-    highYield: false
-  },
-  // Surgery - Trauma/Emergency Surgery
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S3",
-    topicName: "Advanced Trauma Life Support (ATLS) & Polytrauma Management",
-    lecturer: "Dr. Akanbi",
-    subspecialty: "Trauma/Emergency Surgery",
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 3,
-    highYield: true
-  },
-  {
-    subject: SubjectType.SURGERY,
-    batch: "S3",
-    topicName: "Surgical Triage & Emergency Department Resuscitation",
-    lecturer: "Dr. Akanbi",
-    subspecialty: "Trauma/Emergency Surgery",
-    priority: StudyPriority.UPCOMING,
-    batchPriority: 3,
-    highYield: false
-  }
+const medicine1Topics = [
+  "Introduction to medicine",
+  "Approach to the evaluation of patients with cardiovascular disease and common symptomatology in cardiac diseases",
+  "Approach to the evaluation of patients with endocrine disorder and common symptomatology in endocrine diseases",
+  "Approach to the evaluation of patients with gastrointestinal disease and common symptomatology in gastrology and hepatology",
+  "Approach to the evaluation of patients with kidney disease and common symptomatology in kidney diseases",
+  "Approach to the evaluation of patients with respiratory disease and common symptomatology in respiratory diseases",
+  "Approach to the evaluation of patients with neurological disease and common symptomatology in neurological diseases",
+  "Approach to gastrointestinal system examination",
+  "Approach to cardiovascular system examination",
+  "Approach to patient with endocrine disorders and physical examination in endocrine diseases",
+  "Approach to examination in kidney disease. Investigation in kidney disease",
+  "Approach to chest examination. Investigation in respiratory diseases",
+  "Approach to patients with dermatological and venereological disease",
+  "Immunological and genetic basis of disease",
+  "Investigations in dermatology and venereology",
+  "Approach to the patient with diarrhea and ascites",
+  "Rheumatic fever and rheumatic heart disease",
+  "Diabetes mellitus",
+  "Approach to neurological examination, higher motor function and cranial nerves",
+  "Evaluation of glomerular diseases - glomerulonephritis, nephrotic syndrome",
+  "Pneumonias",
+  "Introduction to basic side room tests on urine, stool, sputum, and blood",
+  "Peptic ulcer disease",
+  "Heart failure",
+  "Evaluation of the febrile patient",
+  "Approach to neurological examination - motor, sensory and autonomic systems",
+  "Acute and chronic complications of diabetes mellitus",
+  "Tuberculosis",
+  "Viral hepatitis",
+  "Investigations in dermatology and venereology",
+  "Thyroid disorders - hypothyroidism, hyperthyroidism",
+  "Multidisciplinary approach to patient care",
+  "Hypertension",
+  "Urinary tract infection (upper & lower)",
+  "Asthma",
+  "Introduction to electrocardiography (ECG)",
+  "Gastrointestinal bleeding",
+  "Acute and chronic pericarditis, myocarditis",
+  "Eczema",
+  "Hypertensive heart disease",
+  "Introduction to fluid and electrolyte imbalance",
+  "Parasitic skin infections",
+  "Malaria",
+  "Nutritional disorders - causes, clinical presentation, investigation and treatment",
+  "Sepsis",
+  "Tetanus",
+  "Introduction to acute kidney injury",
+  "Introduction to chronic kidney disease",
+  "Pleural effusion",
+  "Stroke",
+  "Typhoid"
 ];
 
-// Deduplicates raw clinical syllabus data according to specified criteria:
-// 1. Group by subject group (Medicine 1+2+3 -> Medicine, Surgery 1+2+3 -> Surgery, CommMed 1+2 -> Community Medicine)
-// 2. Normalize topic name (lowercase, trim whitespace)
-// 3. Keep the HIGHER batch number as canonical (e.g. M3 > M2 > M1)
-// 4. Merge lecturers if multiple exist, separated by ' & ' (and avoid duplicate lecturer names)
+const medicine2Topics = [
+  "Superficial fungal infection",
+  "Deep fungal infection",
+  "Infective endocarditis",
+  "Viral/bacterial/parasitic skin infection",
+  "Pyrexia of unknown origin",
+  "Papulosquamous disorders",
+  "Diabetic foot ulcer",
+  "Pigmentary skin disorders",
+  "Calcium metabolism and its disorders",
+  "Amoebiasis",
+  "Clostridial infections",
+  "Rational use of antibiotics",
+  "Syncope",
+  "Pericarditis, myocarditis and diseases of the aorta",
+  "Salmonella infections",
+  "Pregnancy and heart disease",
+  "Insulin therapy and dietary management of diabetes",
+  "HIV 1 (etiology, epidemiology, risk factors, transmission, diagnosis, treatment and prevention)",
+  "Haemorrhagic viral disease",
+  "Rabies",
+  "Immunobullous skin disorders",
+  "Dermatologic emergency/cutaneous drug reaction",
+  "Tuberculosis (extra-pulmonary)",
+  "Leprosy",
+  "Sexually transmitted disease",
+  "HIV and the skin",
+  "Malaria",
+  "Glomerular disease associated with infections",
+  "Herbal and over the counter medication",
+  "Adrenal gland disorders",
+  "Cholera",
+  "Sebaceous/eccrine gland disorder",
+  "Gastroenteritis",
+  "Gastrointestinal reflux disease",
+  "Trematode and nematode infection",
+  "HIV and respiratory system",
+  "HIV and digestive system",
+  "HIV and the nervous system",
+  "HIV and circulatory system"
+];
+
+const medicine3Topics = [
+  "Meningitis",
+  "Adult congenital heart diseases",
+  "Lymphoproliferative disorders",
+  "Myeloproliferative disorders",
+  "Tuberculosis (pulmonary and extrapulmonary)",
+  "Approach to Neurological Examination I",
+  "Approach to Neurological Examination II",
+  "Malabsorption syndromes, inflammatory bowel disease",
+  "Upper and lower Gastrointestinal tract bleeding",
+  "Current guidelines in the management of diabetes",
+  "Headache syndromes",
+  "Spinal cord compression syndrome",
+  "Acute and chronic complications of diabetes",
+  "Obesity and medical nutrition therapy",
+  "Sepsis, systemic inflammatory response syndrome and multi-organ dysfunction syndrome",
+  "Multidisciplinary approach to patient care",
+  "Sleep disorders",
+  "Coma - causes and management",
+  "Ethics of clinical practice I",
+  "Kidney replacement therapy (Haemodialysis, Peritoneal dialysis)",
+  "Brady- and tachyarrhythmias, cardiac resuscitation",
+  "Heart failure",
+  "Thyroid disorders",
+  "Management of Acute kidney injury and chronic kidney disease",
+  "Connective tissue disorders",
+  "Mixed connective tissue disease, Dermatomyositis and polymyositis",
+  "Gastrointestinal malignancies",
+  "Gallstone disease, pancreatitis",
+  "Acute liver failure, management of hepatic encephalopathy",
+  "ECG Wrap up",
+  "Evaluation of the elderly. Common health issues with the elderly",
+  "The arthritides",
+  "Peripheral neuropathies",
+  "Reflective practice",
+  "Neuroendocrinology. Introduction to the use of technology in Medicine (Telemedicine)",
+  "Chronic obstructive pulmonary disease, Respiratory failure",
+  "Calcium metabolism & Osteoporosis",
+  "Ischaemic heart disease",
+  "Acute and chronic arterial disease, venous thromboembolism",
+  "Dementia",
+  "Pneumonias",
+  "Stroke",
+  "Epilepsy",
+  "Parkinson's disease",
+  "Anaemias",
+  "Haemoglobinopathies",
+  "Bronchial asthma",
+  "Acute drug poisoning and overdose",
+  "Kidney transplantation",
+  "Elderly abuse and neglect, Drug management in the elderly",
+  "Diabetic kidney disease, hypertension and the kidney",
+  "Cardiomyopathies",
+  "Carcinoma of the lungs"
+];
+
+const surgery1Topics = [
+  "Intestinal obstruction",
+  "Surgical nutrition",
+  "Thyroid and parathyroid",
+  "History taking and physical examination in surgery / history of surgery",
+  "The stomach",
+  "Surgical wound management",
+  "Principles of fracture management",
+  "Surgical infection and antibiotics in surgery",
+  "The breast",
+  "Surgical bleeding and hemostasis / shock",
+  "Peri-operative care",
+  "Sutures, drains and catheter",
+  "Medical problems in surgery",
+  "Cardiopulmonary resuscitation",
+  "Clinical and investigative evaluation of neurosurgical patients",
+  "General principle of cancer management",
+  "Blood transfusions in surgery",
+  "Head and neck masses",
+  "Trauma management / metabolic responses to injury",
+  "Intestinal obstruction / surgical nutrition",
+  "Congenital anomalies in paediatric surgery",
+  "Fluid & electrolyte management of surgical",
+  "The large intestine (benign and malignant)",
+  "The acute abdomen / appendix",
+  "Common urological emergency",
+  "Varicose veins / DVT / thrombophlebitis",
+  "Burn / grafts and flaps",
+  "Transplantation in surgery",
+  "Pediatrics surgical emergency",
+  "Head injury / spinal injury, pituitary gland",
+  "Stings and bites, tetanus",
+  "Anorectal disease (benign and malignant)",
+  "Typhoid enteritis / the spleen",
+  "Diseases of esophagus and diaphragmatic hernias",
+  "Surgical aspects of AIDS",
+  "The liver and biliary tracts",
+  "Paediatric urology",
+  "The pancreas / obstructive jaundice",
+  "Musculoskeletal infection / metabolic disease"
+];
+
+const surgery2Topics = [
+  "Investigations in urology",
+  "Hematuria, new trends in urology",
+  "Urolithiasis",
+  "Fractures and dislocations of lower limbs",
+  "Bone tumours",
+  "Hirschprung disease",
+  "Surgical nutrition",
+  "Degenerative disease of the spine",
+  "Management of acute abdomen",
+  "Robotic surgery",
+  "Parenteral nutrition",
+  "Leg ulcers",
+  "Hand infection",
+  "Cancer chemotherapy",
+  "Evaluation of neurological patients",
+  "Congenital malformation of nervous system",
+  "Vascular lesions of the nervous system",
+  "Management of lymphedema",
+  "Wound healing",
+  "Anorectal malformation",
+  "Neonatal intestinal obstruction",
+  "Surgery in the elderly",
+  "Scoliosis and kyphosis",
+  "Infections of joints and bones (excluding septic arthritis and osteomyelitis)",
+  "The surgeon and HIV infections",
+  "Tumors of the urinary tract",
+  "Prostate gland",
+  "Endoscopy in surgery",
+  "Management of head injury",
+  "Diabetes and hypertension on surgery",
+  "Investigations monitoring and recent advances in cardiothoracic practice",
+  "Management of chest injuries",
+  "Congenital cardiac anomalies",
+  "Facial cleft and management / ethical issues in surgery",
+  "Internet, information, technology and surgery",
+  "Surgical aspects of sickle cell disease",
+  "The foot",
+  "Amputation",
+  "Rehabilitation in orthopedics",
+  "Congenital limb anomalies",
+  "Blood transfusion in surgery",
+  "Angular deformities of the lower limb",
+  "Nerve injury and management",
+  "Burns, etiology and management",
+  "Low back pain",
+  "Spinal injuries",
+  "Rehabilitation in orthopedic",
+  "Operating room ethics"
+];
+
+const surgery3Topics = [
+  "Suture and Drains/Catheter/Antisepsis",
+  "Abdominal trauma",
+  "Surgical Wounds, Wound Healing and Wound Infection",
+  "Benign and Malignant Colorectal diseases",
+  "Pancreatitis, Ca Pancreas",
+  "Liver: Injury, Abscess, Tumour",
+  "Grafts and Flaps / Skin Tumor",
+  "Leg Ulcer, Varicose Veins",
+  "Hernias/ Gastric Tumors",
+  "Fluid and Electrolyte Balance in Surgical Patients",
+  "Head injury/spinal injury/common neurosurgical conditions",
+  "Trauma: Triage and Management of the acutely injured and multiple injury",
+  "Appendicitis / Thyroid Gland Disorders",
+  "Imaging in Surgery I",
+  "Benign and Malignant Diseases of the prostate",
+  "Scrotal Swellings, Urinary Calculi and Bladder Outlet Obstruction",
+  "Urogenital Injuries and Urethral Strictures",
+  "Peritonitis, Typhoid perforation, Peritoneal Abscess",
+  "Surgical Parasitosis/ Intestinal Obstruction",
+  "Shock/ Circulatory Collapse: Cause and Management",
+  "Disorders of surgical Bleeding, Blood Transfusion of Blood substitutes and maintenance of hemostasis in surgery",
+  "Common eye problems",
+  "Benign Anorectal diseases",
+  "Oesophageal Diseases",
+  "Burn: Aetiology and Management",
+  "Salivary Gland Diseases / Common ENT Problems",
+  "Benign and Malignant Breast Diseases",
+  "Anesthesia Overview 1",
+  "Overview of common cardiothoracic cases",
+  "Testicular, Kidney and Bladder Tumor",
+  "Peptic Ulcer Disease",
+  "Cholelithiasis, Surgical Jaundice",
+  "Management of Fractures",
+  "Common Pediatric Surgical Problems",
+  "Acute and Chronic Osteomyelitis",
+  "Arthritis (Pyogenic, Tuberculous) Degenerative",
+  "Talipes and Genu deformities/ Bone tumours",
+  "Surgical Infection and Rational use of antibiotic/ Pre- and Post-Operative Care of Surgical Patient",
+  "Recent Advances in Surgery"
+];
+
+const communityMedicine1Topics = [
+  "Primary health care: definition, history, component, principle",
+  "History of public health: history of public health and community health specialties",
+  "Health management: introduction, concept, function",
+  "Epidemiology: definition, scope, objective, uses",
+  "Demography: introduction, definition and rationale, demographic processes",
+  "Occupational health: definition, history, concept, component of the work environment, interaction between work and health",
+  "Public health nutrition: Concept in human nutrition, nutrients and their functions, food sources and related diseases",
+  "Environmental health: Introduction, components, water sources, uses, pollution & purification",
+  "Medical statistics: Data summary measures of central tendencies",
+  "Epidemiology: Triad, principles of disease control and eradication and levels of prevention",
+  "Health management: Planning process, organizing",
+  "Demography: Sources of data: census, NDHS etc",
+  "Research methods: Concept, uses, types, methods of data collection, planning, and conducting research in public health",
+  "Occupational health: Services and practice, organization, functions",
+  "Epidemiology: epidemiological methods",
+  "Public health nutrition: Assessment of nutritional status in a community",
+  "Social medicine: Introduction, categories, classification of underprivileged members of the society",
+  "Research methods: Study designs / sampling techniques",
+  "Primary health care: Organization of services in PHC including referral system, community participation and mobilization",
+  "Reproductive health: Maternal health: objectives, maternal depletion syndrome, causes of maternal death",
+  "Medical statistics: Data summary measures of dispersion",
+  "Environmental health: Solid and liquid waste management and treatment",
+  "Epidemiology: Epid and control of selected endemic diseases of skin and mucous membrane",
+  "Medical statistics: Introduction to inferential statistics / Concept of confidence interval",
+  "Social medicine: Medical and social problems of underprivileged members of the society and control",
+  "International health: Origin and development of international health organization and their functions",
+  "Public health admin-principles, the Nigeria health system",
+  "Environmental health: Vector/pest control, chemical safety & poisoning",
+  "Reproductive health: child health: objectives, causes of child death, child survival strategies",
+  "Health education: definition, concept, components, health communication, behavioural communication change",
+  "Public health nutrition: Nutrition in children and associated nutritional problems",
+  "Public health laboratory",
+  "Epidemiology: Epidemiology and control of selected endemic diseases of the respiratory tract",
+  "Health education: Health promotion: concept, scope and principles",
+  "Reproductive health: Family planning, information, counseling and services. Methods of FP, unmet needs of FP",
+  "Environmental health: housing and health",
+  "Medical ethics: definition, evolution, international codes",
+  "Health management: staffing, the health team, leading",
+  "Medical ethics: duties of doctors, professional negligence, code of conduct",
+  "Public health nutrition: nutrition among pregnant women",
+  "Public health nutrition: And the elderly and associated nutritional problems",
+  "Primary health care: community mental health, community dental care",
+  "Health management: staffing, the health team leading",
+  "Medical ethics: definition, evolution, international codes",
+  "Epidemiology: epidemiological methods",
+  "International health: Origin and development of international health",
+  "Medical ethics: duties of doctors, negligence, code of conduct",
+  "Public health nutrition: Nutrition among pregnant women and the elderly and associated nutritional problems",
+  "Primary health care: Organization of services in PHC including referral system, community participation and mobilization",
+  "Reproductive health: school health programme and services; components, implementation and healthful school environment",
+  "Research methods: concept, uses, types, methods of data collection, planning, conducting research in public health",
+  "Environmental health: Assessment of quality of water and water related diseases",
+  "Health management: Utilization of health services, inverse care law and referral system",
+  "Epidemiology: Double burden of disease and epidemiological transition",
+  "Demography: Demographic process: marriage, migration and demographic transition",
+  "Medical sociology: concept of socialization, social classification, social stratification and social mobility",
+  "Research methods: scales of measurements: nominal and ordinal; interval and ratio scales",
+  "Public health admin-principles, the Nigeria health system",
+  "Health management: problem solving in management",
+  "Epidemiology: epid and control of selected endemic diseases of skin and mucous membrane",
+  "Reproductive health: School health programme and services; components, implementation and healthful school environment",
+  "Environmental health: housing and health",
+  "Research methods: Study designs, sample size determination and sampling techniques",
+  "Health education: Health promotion: concept, scope and principles",
+  "Public health nutrition: Epidemiology and control of common nutritional problems in Nigeria: PEM, selected micronutrient deficiencies, obesity",
+  "Research methods: presentation of data; prose/narrative, contingency table, frequency tables, pie charts, bar charts, histogram, frequency polygon, pictogram and scattered diagram",
+  "Health education: Identification of needs, types of needs: channel and methods of health education in rural/urban settings",
+  "Occupational health: Principles of occupational health and safety, occupational diseases and hazards prevention",
+  "Medical sociology: Beneficial and harmful traditional practices",
+  "Research methods: Test of significance: concept of hypothesis",
+  "Environmental health: Solid waste and liquid waste management",
+  "Demography: Population dynamics, structure and growth; health and population growth",
+  "Health management: Introduction to health care financing; concept, goals and objectives",
+  "Epidemiology: Concept of endemicity, epidemicity and pandemicity",
+  "Medical ethics: Doctor-patient relationship, doctor-doctor relationship",
+  "Occupational health: Occupational accidents and safety at work",
+  "Health education: Steps of health education",
+  "Reproductive health: Measurement of fertility and mortality",
+  "Health management: Options in health care financing: advantages and disadvantages",
+  "International health: international health organizations and their functions, non-governmental organizations and their functions",
+  "Epidemiology: epidemiology and control of selected endemic diseases of the respiratory tract",
+  "Reproductive health: family planning, information, counseling and services. Methods of FP, unmet needs of FP",
+  "Primary health care: Community mental health, community dental care",
+  "Public health museum",
+  "Epidemiology: Types of epidemics, uses of epidemic curve and epidemic investigations",
+  "Medical sociology: Impairment, disability and handicap",
+  "Environmental health: Vector/pest control, chemical safety & poisoning"
+];
+
+const communityMedicine2Topics = [
+  "Research methodology: steps in research, data collection, study designs, sampling techniques",
+  "Health management 1: staffing, health team, leadership and leading",
+  "Primary health care 1: PHC implementation in Nigeria and challenges",
+  "Biostatistics 1: inferential statistics-chi square",
+  "Occupational health 1: small scale industries and hospital",
+  "Reproductive health 1: focused ANC, essential obstetric care, post-natal care, child health",
+  "Health education 1: BCC & IEC materials & applications in health communication",
+  "Public health nutrition 1: nutritional problems of special groups of children, adolescents",
+  "Health management 2: control, monitoring & evaluation, health indicators",
+  "Public health nutrition 2: nutritional problems of special groups - pregnant women, aged",
+  "Environmental health 1: air hygiene & pollution",
+  "Biostatistics 2: inferential statistics, t-test, pooled, unpaired samples",
+  "Epidemiology: emerging and re-emerging disease, epidemic, and disaster management",
+  "Reproductive health 2: family planning information and service, maternal depletion syndrome, breast feeding",
+  "Research methods and biomedical writing: questionnaire designs, writing proposals and projects, referencing styles",
+  "Health care financing 1: financing the health care sector in Nigeria and challenges, budgeting, economic evaluation",
+  "Reproductive health 3: STI including HIV/AIDS, PMTCT",
+  "Public health nutrition 3: assessment of nutritional status, nutritional survey",
+  "Epidemiology: epidemiology & control of non-communicable disease - RTA, cancers",
+  "Epidemiology: epidemic transition & double burden of disease",
+  "Medical ethics 1: introduction, history, theories, approaches",
+  "Primary health care 2: health manpower at the PHC",
+  "Biostatistics 3: sample size determination, calculations for various study designs",
+  "International health 1: governmental and non-governmental agencies",
+  "Health management 3: supervision: quality improvement in health care",
+  "Epidemiology: epidemic and control of selected endemic/neglected tropical disease",
+  "Occupational health 2: occupational poisons, cancers, dermatitis, trauma etc",
+  "Social and rehab medicine: social welfare service, prison health, motherless babies, refugees",
+  "Public health nutrition: nutritional rehabilitation and education",
+  "Environmental health 3: noise and irradiation effect and control",
+  "Epidemiology: epidemiology and control of non-communicable disease, HTN, DM",
+  "Social and rehab medicine 2: child abuse / labour: destitute",
+  "Medical ethics 1: patients rights, obligation: principles of ethics",
+  "Health management 4: national health policy, health development in Nigeria",
+  "Primary health care 3: community mental health & community dental health",
+  "Reproductive health 4: adolescent reproductive health, prevention and management of abortion",
+  "Health management: management of health researches, drug revolving scheme",
+  "Primary health care 4: structural organization in PHC - LGA, ward, communication health organization",
+  "Reproductive health 5: prevention and management of infertility, sexual dysfunction, and non-infectious conditions of reproductive tract",
+  "International health 2: international health regulation surveillance, port health",
+  "Environmental health 2: food hygiene and safety: market sanitation",
+  "Health care financing 2: insurance scheme, retainership"
+];
+
+// Helper functions to map raw strings to structured Omit<Topic, 'id' | 'status'> items programmatically
+function getNormalKey(name: string): string {
+  const fillers = [
+    "and", "the", "in", "of", "to", "or", "a", "with", "for", "on", "from", "at", "by", 
+    "about", "common", "selected", "approach", "evaluation", "patients", "disease", 
+    "diseases", "symptomatology", "investigations", "investigation", "management", 
+    "introduction", "concept", "principles", "principle", "overview", "methods", 
+    "method", "clinical", "evaluation", "treatment", "causes", "presentation", "studies"
+  ];
+  const words = name
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .split(/\s+/)
+    .map(w => w.trim())
+    .filter(w => w.length > 2 && !fillers.includes(w));
+  
+  words.sort();
+  return words.join("_");
+}
+
+function getSubspecialty(name: string, subject: SubjectType): string {
+  const lowerName = name.toLowerCase();
+
+  if (subject === SubjectType.MEDICINE) {
+    if (lowerName.includes("cardio") || lowerName.includes("cardiac") || lowerName.includes("heart") || lowerName.includes("pericarditis") || lowerName.includes("myocarditis") || lowerName.includes("hypertens") || lowerName.includes("ecg") || lowerName.includes("arrhythmia") || lowerName.includes("ischemic") || lowerName.includes("coronary") || lowerName.includes("arterial") || lowerName.includes("vein") || lowerName.includes("thromboembolism") || lowerName.includes("syncope")) {
+      return "Cardiology";
+    }
+    if (lowerName.includes("endocrine") || lowerName.includes("thyroid") || lowerName.includes("diabetes") || lowerName.includes("diabetic") || lowerName.includes("cushing") || lowerName.includes("adrenal") || lowerName.includes("calcium") || lowerName.includes("metabolism") || lowerName.includes("neuroendocrinology") || lowerName.includes("obesity")) {
+      return "Endocrinology";
+    }
+    if (lowerName.includes("kidney") || lowerName.includes("renal") || lowerName.includes("nephrotic") || lowerName.includes("glomerular") || lowerName.includes("glomerulonephritis") || lowerName.includes("dialysis") || lowerName.includes("haemodialysis") || lowerName.includes("peritoneal") || lowerName.includes("transplantation") || lowerName.includes("urinary")) {
+      return "Nephrology";
+    }
+    if (lowerName.includes("neurolog") || lowerName.includes("stroke") || lowerName.includes("seizure") || lowerName.includes("epilepsy") || lowerName.includes("meningitis") || lowerName.includes("parkinson") || lowerName.includes("neuropath") || lowerName.includes("headache") || lowerName.includes("coma") || lowerName.includes("brain") || lowerName.includes("spinal cord compression") || lowerName.includes("higher motor") || lowerName.includes("cranial nerve") || lowerName.includes("motor, sensory")) {
+      return "Neurology";
+    }
+    if (lowerName.includes("dermatolog") || lowerName.includes("venereolog") || lowerName.includes("skin") || lowerName.includes("eczema") || lowerName.includes("fungal") || lowerName.includes("scabies") || lowerName.includes("papulosquamous") || lowerName.includes("pigmentary") || lowerName.includes("immunobullous") || lowerName.includes("cutaneous") || lowerName.includes("leprosy") || lowerName.includes("sebaceous") || lowerName.includes("eccrine") || lowerName.includes("eczema")) {
+      return "Dermatology";
+    }
+    if (lowerName.includes("gastrointestinal") || lowerName.includes("gastrology") || lowerName.includes("hepatology") || lowerName.includes("diarrhea") || lowerName.includes("ascites") || lowerName.includes("peptic") || lowerName.includes("ulcer") || lowerName.includes("bleeding") || lowerName.includes("viral hepatitis") || lowerName.includes("amoebiasis") || lowerName.includes("gastroenteritis") || lowerName.includes("reflux") || lowerName.includes("digestive") || lowerName.includes("malabsorption") || lowerName.includes("bowel") || lowerName.includes("crohn") || lowerName.includes("liver") || lowerName.includes("gallstone") || lowerName.includes("pancreatitis") || lowerName.includes("portal") || lowerName.includes("stomach") || lowerName.includes("cholera") || lowerName.includes("salmonella") || lowerName.includes("typhoid") || lowerName.includes("gastro")) {
+      return "Gastroenterology";
+    }
+    if (lowerName.includes("respiratory") || lowerName.includes("pulmonary") || lowerName.includes("asthma") || lowerName.includes("pneumonia") || lowerName.includes("tuberculosis") || lowerName.includes("pleural") || lowerName.includes("cough") || lowerName.includes("bronchial") || lowerName.includes("obstructive") || lowerName.includes("copd") || lowerName.includes("chest")) {
+      return "Pulmonology";
+    }
+    if (lowerName.includes("psychiatry") || lowerName.includes("depressive") || lowerName.includes("suicide") || lowerName.includes("schizophrenia") || lowerName.includes("psychosis") || lowerName.includes("delirium") || lowerName.includes("dementia") || lowerName.includes("sleep") || lowerName.includes("elderly") || lowerName.includes("geriatric") || lowerName.includes("abuse")) {
+      return "Psychiatry";
+    }
+    if (lowerName.includes("ethics") || lowerName.includes("reflective") || lowerName.includes("negligence") || lowerName.includes("code of conduct") || lowerName.includes("multidisciplinary") || lowerName.includes("evaluation") || lowerName.includes("practice") || lowerName.includes("technology") || lowerName.includes("telemedicine")) {
+      return "Medical Ethics";
+    }
+    return "Medical Ethics";
+  } else if (subject === SubjectType.SURGERY) {
+    if (lowerName.includes("urolog") || lowerName.includes("hematuria") || lowerName.includes("urolithiasis") || lowerName.includes("prostate") || lowerName.includes("calculi") || lowerName.includes("scrotal") || lowerName.includes("testicular") || lowerName.includes("bladder") || lowerName.includes("urethral") || lowerName.includes("stricture") || lowerName.includes("kidney tumor") || lowerName.includes("urogenital") || lowerName.includes("catheter") || lowerName.includes("scrotum")) {
+      return "urology";
+    }
+    if (lowerName.includes("paediatric") || lowerName.includes("pediatric") || lowerName.includes("congenital anomalies") || lowerName.includes("hirschprung") || lowerName.includes("anorectal malformation") || lowerName.includes("cleft")) {
+      return "paediatric surgery";
+    }
+    if (lowerName.includes("burn") || lowerName.includes("burns") || lowerName.includes("scalds") || lowerName.includes("grafts") || lowerName.includes("flaps") || lowerName.includes("contracture") || lowerName.includes("wound") || lowerName.includes("suture") || lowerName.includes("suturing")) {
+      return "plastics";
+    }
+    if (lowerName.includes("cardiothoracic") || lowerName.includes("chest") || lowerName.includes("oesophagus") || lowerName.includes("esophageal") || lowerName.includes("esophagus") || lowerName.includes("diaphragmatic") || lowerName.includes("arterial") || lowerName.includes("venous") || lowerName.includes("airway") || lowerName.includes("heart") || lowerName.includes("thoracic")) {
+      return "cardio thoracic surgery";
+    }
+    if (lowerName.includes("ent") || lowerName.includes("head and neck") || lowerName.includes("salivary") || lowerName.includes("tonsil") || lowerName.includes("cleft")) {
+      return "ENT";
+    }
+    if (lowerName.includes("anaesthesia") || lowerName.includes("anaesthesiology") || lowerName.includes("anesthesia") || lowerName.includes("resuscitation") || lowerName.includes("cpr") || lowerName.includes("pain") || lowerName.includes("antisepsis") || lowerName.includes("operating room")) {
+      return "anaesthesiology";
+    }
+    if (lowerName.includes("neurosurgery") || lowerName.includes("head injury") || lowerName.includes("spinal injury") || lowerName.includes("brain") || lowerName.includes("neurological patient") || lowerName.includes("pituitary") || lowerName.includes("hydrocephalus") || lowerName.includes("spinal cord compression")) {
+      return "neurosurgery";
+    }
+    if (lowerName.includes("fracture") || lowerName.includes("dislocation") || lowerName.includes("joint") || lowerName.includes("bone") || lowerName.includes("scoliosis") || lowerName.includes("kyphosis") || lowerName.includes("limb") || lowerName.includes("deformities") || lowerName.includes("talipes") || lowerName.includes("genu") || lowerName.includes("osteomyelitis") || lowerName.includes("back pain") || lowerName.includes("spine") || lowerName.includes("amputation") || lowerName.includes("rehabilitation") || lowerName.includes("musculoskeletal") || lowerName.includes("gout") || lowerName.includes("arthritis")) {
+      return "orthopedics";
+    }
+    if (lowerName.includes("trauma") || lowerName.includes("triage") || lowerName.includes("acute abdomen") || lowerName.includes("abdominal trauma") || lowerName.includes("injury") || lowerName.includes("injured") || lowerName.includes("shock") || lowerName.includes("bleeding") || lowerName.includes("peritonitis") || lowerName.includes("appendic") || lowerName.includes("perforation") || lowerName.includes("abscess") || lowerName.includes("emergency")) {
+      return "trauma/emergency surgery";
+    }
+    if (lowerName.includes("radiology") || lowerName.includes("imaging") || lowerName.includes("x-ray") || lowerName.includes("ultrasound") || lowerName.includes("ct") || lowerName.includes("mri")) {
+      return "radiology";
+    }
+    if (lowerName.includes("eye") || lowerName.includes("cataract") || lowerName.includes("glaucoma") || lowerName.includes("refractive") || lowerName.includes("ocular") || lowerName.includes("ophthalmology") || lowerName.includes("opthalmology")) {
+      return "Opthalmology";
+    }
+    return "general surgery";
+  } else {
+    // Community Medicine
+    if (lowerName.includes("epidemiolog") || lowerName.includes("triad") || lowerName.includes("disease control") || lowerName.includes("eradication") || lowerName.includes("prevention") || lowerName.includes("endemic") || lowerName.includes("epidemic") || lowerName.includes("pandemic") || lowerName.includes("double burden") || lowerName.includes("emerging") || lowerName.includes("disaster") || lowerName.includes("vector") || lowerName.includes("pest") || lowerName.includes("infectious")) {
+      return "epidemiology";
+    }
+    if (lowerName.includes("occupational") || lowerName.includes("work environment") || lowerName.includes("industrial") || lowerName.includes("safety at work") || lowerName.includes("accident") || lowerName.includes("hazards")) {
+      return "occupational health";
+    }
+    if (lowerName.includes("environmental") || lowerName.includes("water") || lowerName.includes("pollution") || lowerName.includes("waste") || lowerName.includes("sewage") || lowerName.includes("housing") || lowerName.includes("hygiene") || lowerName.includes("sanitation") || lowerName.includes("solid") || lowerName.includes("liquid")) {
+      return "environmental health";
+    }
+    if (lowerName.includes("management") || lowerName.includes("planning") || lowerName.includes("organizing") || lowerName.includes("staffing") || lowerName.includes("health team") || lowerName.includes("leading") || lowerName.includes("supervision") || lowerName.includes("quality improvement") || lowerName.includes("national health policy") || lowerName.includes("utilization") || lowerName.includes("referral") || lowerName.includes("admin")) {
+      return "health management";
+    }
+    if (lowerName.includes("financing") || lowerName.includes("nhis") || lowerName.includes("economics") || lowerName.includes("budget") || lowerName.includes("insurance") || lowerName.includes("retainership") || lowerName.includes("revolving")) {
+      return "health economics";
+    }
+    if (lowerName.includes("international") || lowerName.includes("global") || lowerName.includes("ngo") || lowerName.includes("foreign") || lowerName.includes("port health")) {
+      return "international health";
+    }
+    if (lowerName.includes("reproductive") || lowerName.includes("maternal") || lowerName.includes("child health") || lowerName.includes("child survival") || lowerName.includes("family planning") || lowerName.includes("contraceptive") || lowerName.includes("pregnancy") || lowerName.includes("abortion") || lowerName.includes("infertility") || lowerName.includes("sexual dysfunction") || lowerName.includes("school health") || lowerName.includes("anc") || lowerName.includes("obstetric") || lowerName.includes("post-natal") || lowerName.includes("pmtct") || lowerName.includes("adolescent") || lowerName.includes("baby") || lowerName.includes("fertility") || lowerName.includes("birth")) {
+      return "family & reproductive health (including school health services)";
+    }
+    if (lowerName.includes("education") || lowerName.includes("communication") || lowerName.includes("bcc") || lowerName.includes("iec") || lowerName.includes("promotion")) {
+      return "health education";
+    }
+    if (lowerName.includes("nutrition") || lowerName.includes("nutrients") || lowerName.includes("food") || lowerName.includes("pem") || lowerName.includes("micronutrient") || lowerName.includes("obesity") || lowerName.includes("malnutrition") || lowerName.includes("dietary")) {
+      return "public health nutrition";
+    }
+    if (lowerName.includes("statistics") || lowerName.includes("biostatistics") || lowerName.includes("data") || lowerName.includes("mean") || lowerName.includes("median") || lowerName.includes("central tendencies") || lowerName.includes("dispersion") || lowerName.includes("hypothesis") || lowerName.includes("inferential") || lowerName.includes("chi square") || lowerName.includes("t-test") || lowerName.includes("confidence") || lowerName.includes("sample size") || lowerName.includes("significance") || lowerName.includes("measurements") || lowerName.includes("research methodology") || lowerName.includes("research methods") || lowerName.includes("questionnaire") || lowerName.includes("proposal") || lowerName.includes("thesis") || lowerName.includes("scales")) {
+      return "biostatistics";
+    }
+    if (lowerName.includes("demography") || lowerName.includes("demographics") || lowerName.includes("census") || lowerName.includes("ndhs") || lowerName.includes("marriage") || lowerName.includes("migration") || lowerName.includes("transition") || lowerName.includes("population") || lowerName.includes("fertility") || lowerName.includes("mortality")) {
+      return "demographics";
+    }
+    if (lowerName.includes("sociology") || lowerName.includes("social") || lowerName.includes("underprivileged") || lowerName.includes("traditional practices") || lowerName.includes("impairment") || lowerName.includes("disability") || lowerName.includes("handicap") || lowerName.includes("rehab") || lowerName.includes("welfare") || lowerName.includes("prison") || lowerName.includes("refugees") || lowerName.includes("destitute") || lowerName.includes("abuse") || lowerName.includes("labour")) {
+      return "social and rehabilitate medicine";
+    }
+    if (lowerName.includes("ethics") || lowerName.includes("rights") || lowerName.includes("negligence") || lowerName.includes("conduct") || lowerName.includes("doctor-patient") || lowerName.includes("negligence")) {
+      return "medical ethics";
+    }
+    return "health management";
+  }
+}
+
+function getLecturer(name: string, sub: string, subject: SubjectType): string {
+  const lowerName = name.toLowerCase();
+
+  if (subject === SubjectType.MEDICINE) {
+    if (sub === "Nephrology") {
+      if (lowerName.includes("replace") || lowerName.includes("dialysis") || lowerName.includes("transplant")) return "Dr. Shitu";
+      return "Prof. O.E. Ayodele";
+    }
+    if (sub === "Cardiology") {
+      if (lowerName.includes("hyperten") || lowerName.includes("ecg") || lowerName.includes("myocarditis")) return "Dr. Shitu";
+      return "Prof. A.A. Akintunde";
+    }
+    if (sub === "Endocrinology") return "Prof. M.A. Olamoyegun";
+    if (sub === "Neurology") {
+      if (lowerName.includes("meningitis") || lowerName.includes("coma")) return "Dr. O. Oni";
+      return "Dr. Shitu";
+    }
+    if (sub === "Dermatology") return "Dr. G.M. Israel";
+    if (sub === "Pulmonology") return "Prof. M.O. Tanimowo";
+    if (sub === "Gastroenterology") return "Dr. M.M. Oje";
+    if (sub === "Psychiatry") return "Dr. Lasebikan";
+    return "Clinical Faculty";
+  } else if (subject === SubjectType.SURGERY) {
+    if (sub === "urology") {
+      if (lowerName.includes("calculi") || lowerName.includes("prostate") || lowerName.includes("scrotal")) return "Dr. Odeyemi";
+      return "Dr. Idowu";
+    }
+    if (sub === "orthopedics" || sub === "trauma/emergency surgery") {
+      if (lowerName.includes("fracture") || lowerName.includes("osteomyelitis")) return "Dr. Olanipekun";
+      if (lowerName.includes("spine") || lowerName.includes("back pain")) return "Prof. Ajaga";
+      return "Dr. Olatide";
+    }
+    if (sub === "neurosurgery") return "Dr. Adeleke";
+    if (sub === "paediatric surgery") return "Dr. Akinloye";
+    if (sub === "plastics") return "Dr. Onilede";
+    if (sub === "ENT") return "Dr. Adedayo";
+    if (sub === "anaesthesiology") return "Dr. Raji";
+    if (sub === "radiology") return "Dr. Adebayo";
+    if (sub === "Opthalmology") return "Dr. Olayemi";
+    return "Dr. Akanbi";
+  } else {
+    // Community Medicine
+    if (sub === "epidemiology") {
+      if (lowerName.includes("disaster")) return "Dr. Bada";
+      return "Dr. Israel";
+    }
+    if (sub === "biostatistics") {
+      if (lowerName.includes("proposal") || lowerName.includes("thesis") || lowerName.includes("research methods")) return "Prof. Durowade";
+      if (lowerName.includes("museum") || lowerName.includes("laboratory")) return "Dr. Akindele";
+      return "Prof. Egbewale";
+    }
+    if (sub === "environmental health") return "Dr. Olarewaju";
+    if (sub === "family & reproductive health (including school health services)") {
+      if (lowerName.includes("maternal") || lowerName.includes("child") || lowerName.includes("planning")) return "Prof. Olugbenga-Bello";
+      return "Dr. Ilori";
+    }
+    if (sub === "public health nutrition" || sub === "social and rehabilitate medicine") return "Dr. Ige";
+    return "Dr. Ilori";
+  }
+}
+
+function checkHighYield(name: string, sub: string): boolean {
+  const lowerName = name.toLowerCase();
+  
+  // Explicit clinical high yield core topics for MBBS final examinations
+  const hyKeywords = [
+    "hypertension", "heart failure", "rheumatic", "stroke", "meningitis", "diabetes", 
+    "diabetic", "thyroid", "ckd", "aki", "glomerular", "glomerulonephritis", "asthma", 
+    "tuberculosis", "pneumonia", "peptic ulcer", "intestinal obstruction", "acute abdomen", 
+    "appendicitis", "breast", "prostate", "fracture", "dislocation", "head injury", 
+    "primary health care", "epidemiologic methods", "maternal", "infant", "child survival", 
+    "family planning", "statistics", "sepsis", "malaria"
+  ];
+
+  return hyKeywords.some(kw => lowerName.includes(kw)) || sub === "Cardiology" || sub === "Nephrology" || sub === "Endocrinology" || sub === "urology";
+}
+
+function getPriority(subject: SubjectType): StudyPriority {
+  if (subject === SubjectType.COMMUNITY_MEDICINE) return StudyPriority.HIGH;
+  if (subject === SubjectType.MEDICINE) return StudyPriority.ADVANCE_PREP;
+  return StudyPriority.UPCOMING;
+}
+
+// Map simple string lists to the database schema
+const allRawTopics: Omit<Topic, 'id' | 'status'>[] = [
+  ...medicine1Topics.map(name => ({
+    subject: SubjectType.MEDICINE,
+    batch: "M1",
+    topicName: name,
+    lecturer: getLecturer(name, getSubspecialty(name, SubjectType.MEDICINE), SubjectType.MEDICINE),
+    subspecialty: getSubspecialty(name, SubjectType.MEDICINE),
+    priority: getPriority(SubjectType.MEDICINE),
+    batchPriority: 1,
+    highYield: checkHighYield(name, getSubspecialty(name, SubjectType.MEDICINE))
+  })),
+  ...medicine2Topics.map(name => ({
+    subject: SubjectType.MEDICINE,
+    batch: "M2",
+    topicName: name,
+    lecturer: getLecturer(name, getSubspecialty(name, SubjectType.MEDICINE), SubjectType.MEDICINE),
+    subspecialty: getSubspecialty(name, SubjectType.MEDICINE),
+    priority: getPriority(SubjectType.MEDICINE),
+    batchPriority: 2,
+    highYield: checkHighYield(name, getSubspecialty(name, SubjectType.MEDICINE))
+  })),
+  ...medicine3Topics.map(name => ({
+    subject: SubjectType.MEDICINE,
+    batch: "M3",
+    topicName: name,
+    lecturer: getLecturer(name, getSubspecialty(name, SubjectType.MEDICINE), SubjectType.MEDICINE),
+    subspecialty: getSubspecialty(name, SubjectType.MEDICINE),
+    priority: getPriority(SubjectType.MEDICINE),
+    batchPriority: 3,
+    highYield: checkHighYield(name, getSubspecialty(name, SubjectType.MEDICINE))
+  })),
+  ...surgery1Topics.map(name => ({
+    subject: SubjectType.SURGERY,
+    batch: "S1",
+    topicName: name,
+    lecturer: getLecturer(name, getSubspecialty(name, SubjectType.SURGERY), SubjectType.SURGERY),
+    subspecialty: getSubspecialty(name, SubjectType.SURGERY),
+    priority: getPriority(SubjectType.SURGERY),
+    batchPriority: 1,
+    highYield: checkHighYield(name, getSubspecialty(name, SubjectType.SURGERY))
+  })),
+  ...surgery2Topics.map(name => ({
+    subject: SubjectType.SURGERY,
+    batch: "S2",
+    topicName: name,
+    lecturer: getLecturer(name, getSubspecialty(name, SubjectType.SURGERY), SubjectType.SURGERY),
+    subspecialty: getSubspecialty(name, SubjectType.SURGERY),
+    priority: getPriority(SubjectType.SURGERY),
+    batchPriority: 2,
+    highYield: checkHighYield(name, getSubspecialty(name, SubjectType.SURGERY))
+  })),
+  ...surgery3Topics.map(name => ({
+    subject: SubjectType.SURGERY,
+    batch: "S3",
+    topicName: name,
+    lecturer: getLecturer(name, getSubspecialty(name, SubjectType.SURGERY), SubjectType.SURGERY),
+    subspecialty: getSubspecialty(name, SubjectType.SURGERY),
+    priority: getPriority(SubjectType.SURGERY),
+    batchPriority: 3,
+    highYield: checkHighYield(name, getSubspecialty(name, SubjectType.SURGERY))
+  })),
+  ...communityMedicine1Topics.map(name => ({
+    subject: SubjectType.COMMUNITY_MEDICINE,
+    batch: "CM1",
+    topicName: name,
+    lecturer: getLecturer(name, getSubspecialty(name, SubjectType.COMMUNITY_MEDICINE), SubjectType.COMMUNITY_MEDICINE),
+    subspecialty: getSubspecialty(name, SubjectType.COMMUNITY_MEDICINE),
+    priority: getPriority(SubjectType.COMMUNITY_MEDICINE),
+    batchPriority: 1,
+    highYield: checkHighYield(name, getSubspecialty(name, SubjectType.COMMUNITY_MEDICINE))
+  })),
+  ...communityMedicine2Topics.map(name => ({
+    subject: SubjectType.COMMUNITY_MEDICINE,
+    batch: "CM2",
+    topicName: name,
+    lecturer: getLecturer(name, getSubspecialty(name, SubjectType.COMMUNITY_MEDICINE), SubjectType.COMMUNITY_MEDICINE),
+    subspecialty: getSubspecialty(name, SubjectType.COMMUNITY_MEDICINE),
+    priority: getPriority(SubjectType.COMMUNITY_MEDICINE),
+    batchPriority: 2,
+    highYield: checkHighYield(name, getSubspecialty(name, SubjectType.COMMUNITY_MEDICINE))
+  }))
+];
+
+// Deduplicates raw clinical syllabus data according to the user's criteria:
+// 1. Group by subject group (Medicine, Surgery, Community Medicine)
+// 2. Normalize and check similarity (by sorting core keywords, completely order-independent)
+// 3. Keep canonical recency (e.g., S3 > S2 > S1)
+// 4. Trace the batches it was found in, and append `[Repeated in S1, S3]` to the canonical name!
 export function getCuratedSyllabus(): Topic[] {
-  const grouped: Record<string, Record<string, typeof rawSyllabusData[0]>> = {
+  const grouped: Record<string, Record<string, typeof allRawTopics[0] & { batches: string[] }>> = {
     [SubjectType.MEDICINE]: {},
     [SubjectType.SURGERY]: {},
     [SubjectType.COMMUNITY_MEDICINE]: {}
   };
 
-  rawSyllabusData.forEach(item => {
-    const key = item.topicName.trim().toLowerCase();
-    const existing = grouped[item.subject][key];
+  allRawTopics.forEach(item => {
+    const key = getNormalKey(item.topicName);
+    const subjectGroup = grouped[item.subject];
+    const existing = subjectGroup[key];
 
     if (!existing) {
-      grouped[item.subject][key] = { ...item };
-    } else {
-      // Extract batch number
-      const getBatchNum = (b: string) => {
-        const num = parseInt(b.replace(/[^0-9]/g, ''), 10);
-        return isNaN(num) ? 1 : num;
+      subjectGroup[key] = {
+        ...item,
+        batches: [item.batch]
       };
+    } else {
+      // Record this batch if not already added
+      if (!existing.batches.includes(item.batch)) {
+        existing.batches.push(item.batch);
+      }
 
-      const existingNum = getBatchNum(existing.batch);
-      const currentNum = getBatchNum(item.batch);
-
-      // Merge lecturers
-      const lecturers = new Set<string>();
-      existing.lecturer.split(/&|,/).forEach(l => {
-        const name = l.trim();
-        if (name) lecturers.add(name);
-      });
-      item.lecturer.split(/&|,/).forEach(l => {
-        const name = l.trim();
-        if (name) lecturers.add(name);
-      });
-      const mergedLecturers = Array.from(lecturers).join(" & ");
-
-      if (currentNum > existingNum) {
-        // Current batch is higher, make it canonical but preserve merged lecturers
-        grouped[item.subject][key] = {
+      // Check recency (higher batchPriority gets canonical precedence)
+      if (item.batchPriority > existing.batchPriority) {
+        // Current item is more recent, overwrite canonical metadata but preserve collected batches
+        const oldBatches = existing.batches;
+        subjectGroup[key] = {
           ...item,
-          lecturer: mergedLecturers
+          batches: oldBatches
         };
-      } else {
-        // Existing is higher/same, keep it canonical but update lecturers
-        existing.lecturer = mergedLecturers;
       }
     }
   });
@@ -1414,116 +768,32 @@ export function getCuratedSyllabus(): Topic[] {
   let idCounter = 1;
 
   Object.values(grouped).forEach(subjectGroup => {
-    Object.values(subjectGroup).forEach(topic => {
+    Object.values(subjectGroup).forEach(item => {
+      // Sort batches for clean rendering, e.g., ["S1", "S3"]
+      item.batches.sort();
+      
+      // If it appears in multiple batches, specify that it is repeated
+      let formattedName = item.topicName;
+      if (item.batches.length > 1) {
+        formattedName = `${item.topicName} [Repeated in ${item.batches.join(", ")}]`;
+      }
+
       curatedList.push({
         id: `topic_${idCounter++}`,
-        ...topic,
-        status: StudyStatus.NOT_STARTED // Default starting status
+        subject: item.subject,
+        batch: item.batch,
+        topicName: formattedName,
+        lecturer: item.lecturer,
+        subspecialty: item.subspecialty,
+        priority: item.priority,
+        batchPriority: item.batchPriority,
+        highYield: item.highYield,
+        status: StudyStatus.NOT_STARTED
       });
     });
   });
 
-  // Map subspecialties strictly to the user-supplied list
-  const mappedList = curatedList.map(topic => {
-    let sub = topic.subspecialty;
-    const name = topic.topicName.trim().toLowerCase();
-    
-    if (topic.subject === SubjectType.MEDICINE) {
-      // internal medicine: endocrinology, nephrology, neurology, cardiology, dermatology, gastroenterology, pulmonology, psychiatry, medical ethics
-      if (sub === "Cardiology") sub = "Cardiology";
-      else if (sub === "Nephrology") sub = "Nephrology";
-      else if (sub === "Endocrinology") sub = "Endocrinology";
-      else if (sub === "Neurology") sub = "Neurology";
-      else if (sub === "Psychiatry") sub = "Psychiatry";
-      else if (sub === "GI & Hepatology" || sub.includes("GI") || sub.includes("Gastro")) sub = "Gastroenterology";
-      else if (sub === "Respiratory" || sub === "Pulmonology") sub = "Pulmonology";
-      else if (sub.includes("Dermatology")) sub = "Dermatology";
-      else if (sub === "Rheumatology") {
-        sub = "Dermatology"; // Rheum matches Derm best or Nephrology, let's keep it as Dermatology
-      } else if (sub === "General/Multisystem") {
-        if (name.includes("ethics")) {
-          sub = "Medical Ethics";
-        } else if (name.includes("elderly") || name.includes("geriatric")) {
-          sub = "Psychiatry";
-        } else {
-          sub = "Medical Ethics";
-        }
-      } else if (sub === "Infectious Disease") {
-        if (name.includes("tetanus") || name.includes("rabies") || name.includes("meningitis")) {
-          sub = "Neurology";
-        } else if (name.includes("hiv") || name.includes("aids")) {
-          sub = "Dermatology";
-        } else if (name.includes("malaria")) {
-          sub = "Gastroenterology";
-        } else {
-          sub = "Pulmonology";
-        }
-      } else {
-        sub = "Medical Ethics"; // Fallback
-      }
-    } else if (topic.subject === SubjectType.SURGERY) {
-      // Surgery: general surgery, plastics, orthopedics, urology, cardio thoracic surgery, neurosurgery, paediatric surgery, trauma/emergency surgery, ENT, radiology, anaesthesiology, Opthalmology
-      const lowerSub = sub.toLowerCase();
-      if (lowerSub.includes("general surgery")) sub = "general surgery";
-      else if (lowerSub.includes("urology")) sub = "urology";
-      else if (lowerSub.includes("paediatric surgery") || lowerSub.includes("pediatric")) sub = "paediatric surgery";
-      else if (lowerSub.includes("plastics") || lowerSub.includes("burns")) sub = "plastics";
-      else if (lowerSub.includes("vascular") || lowerSub.includes("cardiothoracic") || lowerSub.includes("cardio thoracic")) sub = "cardio thoracic surgery";
-      else if (lowerSub.includes("ent") || lowerSub.includes("head")) sub = "ENT";
-      else if (lowerSub.includes("anaesthesia") || lowerSub.includes("anaesthesiology")) sub = "anaesthesiology";
-      else if (lowerSub.includes("neurosurgery")) sub = "neurosurgery";
-      else if (lowerSub.includes("orthopaedics") || lowerSub.includes("orthopedics")) {
-        if (name.includes("fracture") || name.includes("dislocation") || name.includes("trauma")) {
-          sub = "trauma/emergency surgery";
-        } else {
-          sub = "orthopedics";
-        }
-      } else if (lowerSub.includes("trauma/emergency")) {
-        sub = "trauma/emergency surgery";
-      } else if (lowerSub.includes("oncology")) {
-        sub = "radiology";
-      } else if (lowerSub.includes("opthalmology") || lowerSub.includes("eye")) {
-        sub = "Opthalmology";
-      } else if (lowerSub.includes("radiology")) {
-        sub = "radiology";
-      } else {
-        sub = "general surgery";
-      }
-    } else if (topic.subject === SubjectType.COMMUNITY_MEDICINE) {
-      // Community medicine: epidemiology, occupational health, environmental health, health management, health economics, international health, family & reproductive health (including school health services), health education, public health nutrition, biostatistics, demographics, social and rehabilitate medicine, medical ethics
-      const lowerSub = sub.toLowerCase();
-      if (lowerSub.includes("epidemiology")) sub = "epidemiology";
-      else if (lowerSub.includes("biostatistics") || lowerSub.includes("statistics") || lowerSub.includes("research")) sub = "biostatistics";
-      else if (lowerSub.includes("environmental")) sub = "environmental health";
-      else if (lowerSub.includes("occupational")) sub = "occupational health";
-      else if (lowerSub.includes("nutrition")) sub = "public health nutrition";
-      else if (lowerSub.includes("ethics")) sub = "medical ethics";
-      else if (lowerSub.includes("international") || lowerSub.includes("global")) sub = "international health";
-      else if (lowerSub.includes("demography") || lowerSub.includes("population")) sub = "demographics";
-      else if (lowerSub.includes("reproductive") || lowerSub.includes("maternal") || lowerSub.includes("child") || lowerSub.includes("family planning")) {
-        sub = "family & reproductive health (including school health services)";
-      } else if (lowerSub.includes("sociology") || lowerSub.includes("mental") || lowerSub.includes("dental") || lowerSub.includes("rehabilitate") || lowerSub.includes("social")) {
-        sub = "social and rehabilitate medicine";
-      } else if (lowerSub.includes("education") || lowerSub.includes("marketing")) {
-        sub = "health education";
-      } else if (lowerSub.includes("management") || lowerSub.includes("health system") || lowerSub.includes("phc") || lowerSub.includes("primary health")) {
-        if (name.includes("financing") || name.includes("nhis") || name.includes("economics")) {
-          sub = "health economics";
-        } else {
-          sub = "health management";
-        }
-      } else {
-        sub = "health management";
-      }
-    }
-    
-    return {
-      ...topic,
-      subspecialty: sub
-    };
-  });
-
-  return mappedList;
+  return curatedList;
 }
 
 export const postingScheduleTimeline = [

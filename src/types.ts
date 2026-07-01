@@ -27,6 +27,7 @@ export interface Topic {
   batchPriority: number; // Higher number means higher precedence/recency
   highYield: boolean;
   status: StudyStatus;
+  completedAt?: string; // YYYY-MM-DD completion date
 }
 
 export interface StudyMetrics {
