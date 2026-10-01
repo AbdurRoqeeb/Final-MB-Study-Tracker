@@ -29,10 +29,12 @@ export default function App() {
 
   useEffect(() => {
     const root = document.documentElement;
-    if (theme === 'light') {
-      root.classList.add('light');
-    } else {
+    if (theme === 'dark') {
+      root.classList.add('dark');
       root.classList.remove('light');
+    } else {
+      root.classList.remove('dark');
+      root.classList.add('light');
     }
     localStorage.setItem('MBBS_THEME', theme);
   }, [theme]);
@@ -262,7 +264,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 p-4 sm:p-6 md:p-8 font-sans transition-colors duration-200">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#07090e] text-slate-800 dark:text-slate-100 p-4 sm:p-6 md:p-8 font-sans transition-colors duration-200">
       <div className="max-w-7xl mx-auto">
         {/* Main Countdown and Header */}
         <DashboardHeader
@@ -273,26 +275,26 @@ export default function App() {
         />
 
         {/* Minimalist Segmented Tabs Navigation */}
-        <nav className="flex items-center gap-1.5 bg-slate-200/80 border border-slate-200 p-1.5 rounded-2xl mb-6 self-start w-fit shadow-2xs">
+        <nav className="flex items-center gap-1.5 bg-slate-200/80 dark:bg-[#111726] border border-slate-200 dark:border-slate-800 p-1.5 rounded-2xl mb-6 self-start w-fit shadow-2xs">
           <button
             id="tab-revision-timetable"
             onClick={() => setActiveTab('revision')}
             className={`px-4 py-2 text-xs font-semibold rounded-xl transition-all cursor-pointer flex items-center gap-2 ${
               activeTab === 'revision'
-                ? 'bg-white text-indigo-950 shadow-xs border border-slate-200/60'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
+                ? 'bg-white dark:bg-indigo-600 text-indigo-950 dark:text-white shadow-xs border border-slate-200/60 dark:border-indigo-500'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-800/60'
             }`}
           >
             <span>25-Day Revision</span>
-            <span className="text-[10px] text-indigo-700 bg-indigo-50 px-1.5 py-0.2 rounded font-mono font-bold">Oct 1–25</span>
+            <span className="text-[10px] text-indigo-700 dark:text-indigo-200 bg-indigo-50 dark:bg-indigo-950/90 px-1.5 py-0.2 rounded font-mono font-bold">Oct 1–25</span>
           </button>
           <button
             id="tab-study-planner"
             onClick={() => setActiveTab('planner')}
             className={`px-4 py-2 text-xs font-semibold rounded-xl transition-all cursor-pointer flex items-center gap-2 ${
               activeTab === 'planner'
-                ? 'bg-white text-indigo-950 shadow-xs border border-slate-200/60'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
+                ? 'bg-white dark:bg-indigo-600 text-indigo-950 dark:text-white shadow-xs border border-slate-200/60 dark:border-indigo-500'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-800/60'
             }`}
           >
             <span>15-Week Study Planner</span>
@@ -302,8 +304,8 @@ export default function App() {
             onClick={() => setActiveTab('syllabus')}
             className={`px-4 py-2 text-xs font-semibold rounded-xl transition-all cursor-pointer flex items-center gap-2 ${
               activeTab === 'syllabus'
-                ? 'bg-white text-indigo-950 shadow-xs border border-slate-200/60'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
+                ? 'bg-white dark:bg-indigo-600 text-indigo-950 dark:text-white shadow-xs border border-slate-200/60 dark:border-indigo-500'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-800/60'
             }`}
           >
             <span>Syllabus Directory</span>
