@@ -13,8 +13,10 @@ export default function StudyPlanWidget({ simulatedDate }: StudyPlanWidgetProps)
   // Dates
   const commMedEnd = new Date('2026-08-02T23:59:59').getTime();
   const intMedEnd = new Date('2026-09-06T23:59:59').getTime();
-  const surgEnd = new Date('2026-10-11T23:59:59').getTime();
-  const examDate = new Date('2026-10-19T00:00:00').getTime();
+  const surgEnd = new Date('2026-10-01T23:59:59').getTime();
+  const revisionStart = new Date('2026-10-02T00:00:00').getTime();
+  const sprintStart = new Date('2026-10-19T00:00:00').getTime();
+  const examDate = new Date('2026-10-26T00:00:00').getTime();
 
   let activeSplit: DailyPlanSplit;
   let bannerType: 'info' | 'warning' | 'critical' | 'completed' = 'info';
@@ -37,7 +39,7 @@ export default function StudyPlanWidget({ simulatedDate }: StudyPlanWidgetProps)
       description: "Shift major focus to Internal Medicine (prioritize endocrinology, nephrology, neurology, cardiology). Keep Surgery and CommMed on active recall rotations."
     };
     bannerType = 'info';
-  } else if (currentMs < surgEnd) {
+  } else if (currentMs < revisionStart) {
     activeSplit = {
       communityPercent: 15,
       medicinePercent: 15,
@@ -46,13 +48,22 @@ export default function StudyPlanWidget({ simulatedDate }: StudyPlanWidgetProps)
       description: "Shift major focus to Surgery subspecialties (general surgery, urology, orthopedics, trauma/emergency surgery). Maintain baseline reviews for Medicine & CommMed."
     };
     bannerType = 'warning';
+  } else if (currentMs < sprintStart) {
+    activeSplit = {
+      communityPercent: 33,
+      medicinePercent: 34,
+      surgeryPercent: 33,
+      title: "24-Day Revision Timetable Active",
+      description: "24-Day Revision Timetable active for October 26 Exam! Balanced 3-subject daily schedule: core morning, secondary afternoon, and evening past questions."
+    };
+    bannerType = 'warning';
   } else if (currentMs <= examDate) {
     activeSplit = {
       communityPercent: 33,
       medicinePercent: 33,
       surgeryPercent: 34,
-      title: "Final Week Revision Sprint Mode",
-      description: "Revision Sprint! Equal weight across all subjects. Focus strictly on star-tagged ⭐ HIGH YIELD subjects, past questions, and weak areas."
+      title: "Final Sprint & Recall Phase (Exam: Oct 26)",
+      description: "Final sprint revision! Equal weight across all subjects. Focus strictly on star-tagged ⭐ HIGH YIELD subjects, essential formulas, and past questions."
     };
     bannerType = 'critical';
   } else {

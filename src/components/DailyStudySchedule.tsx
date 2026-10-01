@@ -125,7 +125,7 @@ export default function DailyStudySchedule({
   }, [topics, startDate]);
 
   // Overall finish details
-  const targetDate = new Date('2026-10-12T00:00:00');
+  const targetDate = new Date('2026-10-26T00:00:00');
   const diffTime = targetDate.getTime() - simulatedDate.getTime();
   const daysRemaining = Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
   const pendingTopicsCount = topics.filter(t => t.status !== StudyStatus.DONE).length;
@@ -201,8 +201,8 @@ export default function DailyStudySchedule({
               Daily Syllabus Coverage Pace
             </h4>
           </div>
-          <span className="text-[9px] font-mono text-slate-500 font-bold uppercase">
-            Target: Oct 12, 2026
+          <span className="text-[9px] font-mono text-amber-500 font-bold uppercase">
+            Exam Target: Oct 26, 2026
           </span>
         </div>
 

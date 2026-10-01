@@ -1,6 +1,5 @@
 import React from 'react';
 import { SubjectType, Topic, StudyStatus } from '../types';
-import { Award, CheckCircle2, Circle, Clock, TrendingUp } from 'lucide-react';
 
 interface StatsDashboardProps {
   topics: Topic[];
@@ -31,92 +30,76 @@ export default function StatsDashboard({ topics }: StatsDashboardProps) {
   const commMetrics = getSubjectMetrics(SubjectType.COMMUNITY_MEDICINE);
 
   return (
-    <div id="stats-dashboard" className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+    <div id="stats-dashboard" className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
       {/* Overall Progress Panel */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm flex flex-col justify-between">
+      <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs flex flex-col justify-between">
         <div>
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-[10px] uppercase font-black text-slate-400 tracking-widest flex items-center gap-2">
-              <TrendingUp className="w-4 h-4 text-amber-500" />
+          <div className="flex justify-between items-center mb-3">
+            <span className="text-xs font-semibold text-slate-600">
               Syllabus Completion
-            </h2>
-            <span className="text-[9px] uppercase font-bold bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded border border-amber-500/20">
-              Overall
+            </span>
+            <span className="text-xs font-mono font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded-md">
+              {overallPercent}%
             </span>
           </div>
 
           <div className="flex items-baseline gap-2 mb-3">
-            <span className="text-3xl font-black text-white tracking-tight">
-              {overallPercent}%
+            <span className="text-3xl font-bold text-slate-900 tracking-tight">
+              {completed}
             </span>
-            <span className="text-[10px] text-slate-500 font-bold uppercase tracking-tight">
-              ({completed} / {total} topics)
+            <span className="text-xs text-slate-500 font-medium">
+              / {total} lectures completed
             </span>
           </div>
 
-          {/* Combined Progress Bar */}
-          <div className="w-full bg-slate-950 h-2 rounded-full overflow-hidden mb-5 flex border border-slate-800">
+          {/* Minimalist Progress Bar */}
+          <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden mb-4 flex border border-slate-200/80">
             <div
-              className="bg-emerald-500 h-full transition-all duration-500"
+              className="bg-indigo-600 h-full transition-all duration-300"
               style={{ width: `${overallPercent}%` }}
-              title={`Completed: ${overallPercent}%`}
             ></div>
             <div
-              className="bg-amber-400 h-full transition-all duration-500"
+              className="bg-indigo-300 h-full transition-all duration-300"
               style={{ width: `${inProgressPercent}%` }}
-              title={`In Progress: ${inProgressPercent}%`}
             ></div>
           </div>
         </div>
 
-        {/* Legend / Stats breakdown */}
-        <div className="grid grid-cols-3 gap-2 text-center border-t border-slate-800 pt-4">
+        {/* Quiet Breakdown */}
+        <div className="grid grid-cols-3 gap-2 border-t border-slate-100 pt-3 text-xs">
           <div>
-            <div className="flex items-center justify-center gap-1.5 text-[9px] text-slate-500 font-bold uppercase tracking-tight mb-1">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
-              Done
-            </div>
-            <div className="text-sm font-black text-white">{completed}</div>
+            <span className="text-slate-500 block text-[11px]">Completed</span>
+            <span className="font-bold text-slate-900">{completed}</span>
           </div>
           <div>
-            <div className="flex items-center justify-center gap-1.5 text-[9px] text-slate-500 font-bold uppercase tracking-tight mb-1">
-              <span className="w-2 h-2 rounded-full bg-amber-400 inline-block"></span>
-              Studying
-            </div>
-            <div className="text-sm font-black text-white">{inProgress}</div>
+            <span className="text-slate-500 block text-[11px]">Studying</span>
+            <span className="font-bold text-indigo-700">{inProgress}</span>
           </div>
           <div>
-            <div className="flex items-center justify-center gap-1.5 text-[9px] text-slate-500 font-bold uppercase tracking-tight mb-1">
-              <span className="w-2 h-2 rounded-full bg-slate-700 inline-block"></span>
-              Unread
-            </div>
-            <div className="text-sm font-black text-white">{notStarted}</div>
+            <span className="text-slate-500 block text-[11px]">Unread</span>
+            <span className="font-bold text-slate-500">{notStarted}</span>
           </div>
         </div>
       </div>
 
       {/* Subject Progress Breakdowns */}
-      <div className="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm">
-        <h2 className="text-[10px] uppercase font-black text-slate-400 tracking-widest mb-5 flex items-center gap-2">
-          <Award className="w-4 h-4 text-amber-500" />
-          Posting Progress Breakdowns
-        </h2>
+      <div className="lg:col-span-2 bg-white border border-slate-200 rounded-2xl p-5 shadow-xs">
+        <div className="text-xs font-semibold text-slate-700 mb-3.5">
+          Posting Curricula Breakdown
+        </div>
 
-        <div className="space-y-4">
+        <div className="space-y-3.5">
           {/* Medicine Progress */}
           <div>
-            <div className="flex justify-between text-xs font-bold mb-1.5">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded bg-blue-500 inline-block"></span>
-                <span className="text-blue-400 uppercase tracking-tight text-[11px]">Medicine (M1 + M2 + M3)</span>
-              </div>
-              <span className="font-mono text-[10px] text-slate-500">
-                {medMetrics.completed}/{medMetrics.total} Done • {medMetrics.percent}%
+            <div className="flex justify-between text-xs mb-1.5">
+              <span className="text-slate-900 font-semibold">Internal Medicine (M1 + M2 + M3)</span>
+              <span className="text-indigo-700 font-mono font-bold text-xs">
+                {medMetrics.completed}/{medMetrics.total} · {medMetrics.percent}%
               </span>
             </div>
-            <div className="w-full bg-slate-950 h-2 rounded-full overflow-hidden border border-slate-800">
+            <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden border border-slate-200/80">
               <div
-                className="bg-blue-500 h-full transition-all duration-500 shadow-[0_0_8px_rgba(59,130,246,0.3)]"
+                className="bg-indigo-600 h-full transition-all duration-300"
                 style={{ width: `${medMetrics.percent}%` }}
               ></div>
             </div>
@@ -124,18 +107,15 @@ export default function StatsDashboard({ topics }: StatsDashboardProps) {
 
           {/* Surgery Progress */}
           <div>
-            <div className="flex justify-between text-xs font-bold mb-1.5">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded bg-emerald-500 inline-block"></span>
-                <span className="text-emerald-400 uppercase tracking-tight text-[11px]">Surgery (S1 + S2 + S3)</span>
-              </div>
-              <span className="font-mono text-[10px] text-slate-500">
-                {surgMetrics.completed}/{surgMetrics.total} Done • {surgMetrics.percent}%
+            <div className="flex justify-between text-xs mb-1.5">
+              <span className="text-slate-900 font-semibold">Surgery (S1 + S2 + S3)</span>
+              <span className="text-slate-700 font-mono font-bold text-xs">
+                {surgMetrics.completed}/{surgMetrics.total} · {surgMetrics.percent}%
               </span>
             </div>
-            <div className="w-full bg-slate-950 h-2 rounded-full overflow-hidden border border-slate-800">
+            <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden border border-slate-200/80">
               <div
-                className="bg-emerald-500 h-full transition-all duration-500 shadow-[0_0_8px_rgba(16,185,129,0.3)]"
+                className="bg-slate-600 h-full transition-all duration-300"
                 style={{ width: `${surgMetrics.percent}%` }}
               ></div>
             </div>
@@ -143,18 +123,15 @@ export default function StatsDashboard({ topics }: StatsDashboardProps) {
 
           {/* Community Medicine Progress */}
           <div>
-            <div className="flex justify-between text-xs font-bold mb-1.5">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded bg-amber-500 inline-block"></span>
-                <span className="text-amber-500 uppercase tracking-tight text-[11px]">Community Medicine (CM1 + CM2)</span>
-              </div>
-              <span className="font-mono text-[10px] text-slate-500">
-                {commMetrics.completed}/{commMetrics.total} Done • {commMetrics.percent}%
+            <div className="flex justify-between text-xs mb-1.5">
+              <span className="text-slate-900 font-semibold">Community Medicine (CM1 + CM2)</span>
+              <span className="text-sky-800 font-mono font-bold text-xs">
+                {commMetrics.completed}/{commMetrics.total} · {commMetrics.percent}%
               </span>
             </div>
-            <div className="w-full bg-slate-950 h-2 rounded-full overflow-hidden border border-slate-800">
+            <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden border border-slate-200/80">
               <div
-                className="bg-amber-500 h-full transition-all duration-500 shadow-[0_0_8px_rgba(245,158,11,0.3)]"
+                className="bg-sky-600 h-full transition-all duration-300"
                 style={{ width: `${commMetrics.percent}%` }}
               ></div>
             </div>

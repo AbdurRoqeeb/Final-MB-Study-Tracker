@@ -11,20 +11,21 @@ import FiltersSection from './components/FiltersSection';
 import TopicCard from './components/TopicCard';
 import DailyStudySchedule from './components/DailyStudySchedule';
 import StudyMomentumChart from './components/StudyMomentumChart';
+import RevisionTimetable from './components/RevisionTimetable';
 
-import { Award, CheckCircle2, RotateCcw, Sparkles, Calendar, Search } from 'lucide-react';
+import { RotateCcw, CheckCircle2 } from 'lucide-react';
 
 const LOCAL_STORAGE_KEY = 'MBBS_STUDY_TRACKER_STATUS_V2';
 
 export default function App() {
-  // Theme Toggle state (defaults to dark mode)
+  // Theme Toggle state (defaults to light mode)
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
     const saved = localStorage.getItem('MBBS_THEME');
-    return (saved as 'dark' | 'light') || 'dark';
+    return (saved as 'dark' | 'light') || 'light';
   });
 
-  // Tab Selection state: 'planner' is default and comes first
-  const [activeTab, setActiveTab] = useState<'planner' | 'syllabus'>('planner');
+  // Tab Selection state: 'revision' (25-day revision timetable for Oct 26 exam), 'planner', 'syllabus'
+  const [activeTab, setActiveTab] = useState<'revision' | 'planner' | 'syllabus'>('revision');
 
   useEffect(() => {
     const root = document.documentElement;
@@ -40,11 +41,11 @@ export default function App() {
   const [simulatedDate, setSimulatedDate] = useState<Date>(() => {
     const today = new Date();
     const minDate = new Date('2026-06-01T00:00:00');
-    const maxDate = new Date('2026-10-25T23:59:59');
+    const maxDate = new Date('2026-10-31T23:59:59');
     if (today >= minDate && today <= maxDate) {
       return today;
     }
-    return new Date('2026-06-29T12:00:00');
+    return new Date('2026-10-01T12:00:00');
   });
 
   // Load curated list of topics (which deduplicates dynamically on load)
@@ -57,150 +58,173 @@ export default function App() {
       if (saved) {
         const progressMap = JSON.parse(saved) as Record<string, { status: StudyStatus; completedAt?: string } | StudyStatus>;
         return rawCurated.map(topic => {
-          // Match by topicName normalize-key to be robust against ID shifts
-          const key = `${topic.subject}_${topic.topicName.trim().toLowerCase()}`;
-          const val = progressMap[key];
-          if (val) {
-            if (typeof val === 'string') {
-              return { ...topic, status: val };
-            } else {
-              return { ...topic, status: val.status, completedAt: val.completedAt };
+          if (progressMap[topic.id]) {
+            const entry = progressMap[topic.id];
+            if (typeof entry === 'object' && entry !== null && 'status' in entry) {
+              return { 
+                ...topic, 
+                status: entry.status,
+                completedAt: entry.completedAt
+              };
+            } else if (typeof entry === 'string') {
+              return { ...topic, status: entry as StudyStatus };
             }
-          }
-          return topic;
-        });
-      } else {
-        // First run: Pre-populate 6 completed topics and 1 in-progress to give immediate visual feedback on momentum chart
-        const preCompletions: Record<string, { status: StudyStatus; completedAt?: string }> = {
-          "community medicine_primary health care: definition, history, component, principle": { status: StudyStatus.DONE, completedAt: "2026-06-29" },
-          "community medicine_history of public health: history of public health and community health specialties": { status: StudyStatus.DONE, completedAt: "2026-06-29" },
-          "community medicine_health management: introduction, concept, function": { status: StudyStatus.DONE, completedAt: "2026-06-30" },
-          "community medicine_epidemiology: definition, scope, objective, uses": { status: StudyStatus.DONE, completedAt: "2026-06-30" },
-          "community medicine_demography: introduction, definition and rationale, demographic processes": { status: StudyStatus.DONE, completedAt: "2026-07-01" },
-          "medicine_introduction to medicine": { status: StudyStatus.DONE, completedAt: "2026-07-01" },
-          "medicine_approach to the evaluation of patients with cardiovascular disease and common symptomatology in cardiac diseases": { status: StudyStatus.IN_PROGRESS }
-        };
-
-        return rawCurated.map(topic => {
-          const key = `${topic.subject}_${topic.topicName.trim().toLowerCase()}`;
-          const val = preCompletions[key.toLowerCase()];
-          if (val) {
-            return { ...topic, status: val.status, completedAt: val.completedAt };
           }
           return topic;
         });
       }
     } catch (e) {
-      console.error("Failed to parse local storage status map:", e);
+      console.error("Failed to load progress from localStorage", e);
     }
-    
     return rawCurated;
   });
 
-  // Save progress changes to local storage on topics update
-  useEffect(() => {
-    const progressMap: Record<string, { status: StudyStatus; completedAt?: string }> = {};
-    topics.forEach(t => {
-      const key = `${t.subject}_${t.topicName.trim().toLowerCase()}`;
-      progressMap[key] = { status: t.status, completedAt: t.completedAt };
-    });
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(progressMap));
-  }, [topics]);
-
-  // Handle topic status cycle change
+  // Save to localStorage when topics change
   const handleStatusChange = (id: string, nextStatus: StudyStatus) => {
-    setTopics(prev => prev.map(t => {
-      if (t.id === id) {
-        return {
-          ...t,
-          status: nextStatus,
-          completedAt: nextStatus === StudyStatus.DONE ? simulatedDate.toISOString().split('T')[0] : undefined
-        };
-      }
-      return t;
-    }));
+    const todayStr = simulatedDate.toISOString().split('T')[0];
+    setTopics(prev => {
+      const updated = prev.map(topic => {
+        if (topic.id === id) {
+          return { 
+            ...topic, 
+            status: nextStatus,
+            completedAt: nextStatus === StudyStatus.DONE ? (topic.completedAt || todayStr) : undefined
+          };
+        }
+        return topic;
+      });
+
+      // Persist full progress state to local storage
+      const progressMap: Record<string, { status: StudyStatus; completedAt?: string }> = {};
+      updated.forEach(t => {
+        if (t.status !== StudyStatus.NOT_STARTED || t.completedAt) {
+          progressMap[t.id] = {
+            status: t.status,
+            completedAt: t.completedAt
+          };
+        }
+      });
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(progressMap));
+
+      return updated;
+    });
   };
 
-  // State for search and filters
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedSubject, setSelectedSubject] = useState("All");
-  const [selectedSubspecialty, setSelectedSubspecialty] = useState("All");
-  const [selectedStatus, setSelectedStatus] = useState("All");
-  const [selectedPriority, setSelectedPriority] = useState("All");
-  const [selectedBatch, setSelectedBatch] = useState("All");
+  // Filter States
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedSubject, setSelectedSubject] = useState<SubjectType | 'ALL'>('ALL');
+  const [selectedSubspecialty, setSelectedSubspecialty] = useState<string>('ALL');
+  const [selectedStatus, setSelectedStatus] = useState<StudyStatus | 'ALL'>('ALL');
+  const [selectedPriority, setSelectedPriority] = useState<StudyPriority | 'ALL'>('ALL');
+  const [selectedBatch, setSelectedBatch] = useState<string>('ALL');
   const [showHighYieldOnly, setShowHighYieldOnly] = useState(false);
-  const [sortBy, setSortBy] = useState<'default' | 'alphabetical' | 'status'>('default');
+  const [sortBy, setSortBy] = useState<'PRIORITY' | 'ALPHABETICAL' | 'BATCH'>('PRIORITY');
 
-  // Dynamically compute available subspecialties based on selected subject
+  // Compute available subspecialties based on selected subject
   const availableSubspecialties = useMemo(() => {
-    const filteredList = topics.filter(t => selectedSubject === "All" || t.subject === selectedSubject);
-    const setOfSubs = new Set<string>();
-    filteredList.forEach(t => setOfSubs.add(t.subspecialty));
-    return Array.from(setOfSubs).sort();
+    const filteredBySub = selectedSubject === 'ALL' 
+      ? topics 
+      : topics.filter(t => t.subject === selectedSubject);
+    
+    const set = new Set<string>();
+    filteredBySub.forEach(t => set.add(t.subspecialty));
+    return Array.from(set).sort();
   }, [topics, selectedSubject]);
 
-  // Filtered list computation
+  // Reset subspecialty if subject changes and previous subspecialty doesn't belong
+  useEffect(() => {
+    if (selectedSubspecialty !== 'ALL' && !availableSubspecialties.includes(selectedSubspecialty)) {
+      setSelectedSubspecialty('ALL');
+    }
+  }, [selectedSubject, availableSubspecialties, selectedSubspecialty]);
+
+  // Filter topics
   const filteredTopics = useMemo(() => {
-    return topics.filter(t => {
-      // Keyword match
-      const normQuery = searchQuery.toLowerCase().trim();
-      const matchSearch = searchQuery === "" ||
-        t.topicName.toLowerCase().includes(normQuery);
+    return topics.filter(topic => {
+      // Search text match
+      if (searchQuery.trim()) {
+        const query = searchQuery.toLowerCase();
+        const matchesName = topic.topicName.toLowerCase().includes(query);
+        const matchesSub = topic.subspecialty.toLowerCase().includes(query);
+        const matchesSubject = topic.subject.toLowerCase().includes(query);
+        const matchesBatch = topic.batch.toLowerCase().includes(query);
+        if (!matchesName && !matchesSub && !matchesSubject && !matchesBatch) {
+          return false;
+        }
+      }
 
-      // Subject match
-      const matchSubject = selectedSubject === "All" || t.subject === selectedSubject;
+      // Subject Filter
+      if (selectedSubject !== 'ALL' && topic.subject !== selectedSubject) {
+        return false;
+      }
 
-      // Subspecialty match
-      const matchSubspecialty = selectedSubspecialty === "All" || t.subspecialty === selectedSubspecialty;
+      // Subspecialty Filter
+      if (selectedSubspecialty !== 'ALL' && topic.subspecialty !== selectedSubspecialty) {
+        return false;
+      }
 
-      // Status match
-      const matchStatus = selectedStatus === "All" || t.status === selectedStatus;
+      // Status Filter
+      if (selectedStatus !== 'ALL' && topic.status !== selectedStatus) {
+        return false;
+      }
 
-      // Priority match
-      const matchPriority = selectedPriority === "All" || t.priority === selectedPriority;
+      // Priority Filter
+      if (selectedPriority !== 'ALL' && topic.priority !== selectedPriority) {
+        return false;
+      }
 
-      // Batch match
-      const matchBatch = selectedBatch === "All" || t.batch === selectedBatch;
+      // Batch Filter
+      if (selectedBatch !== 'ALL' && topic.batch !== selectedBatch) {
+        return false;
+      }
 
-      // High yield match
-      const matchHighYield = !showHighYieldOnly || t.highYield;
+      // High Yield Toggle
+      if (showHighYieldOnly && !topic.highYield) {
+        return false;
+      }
 
-      return matchSearch && matchSubject && matchSubspecialty && matchStatus && matchPriority && matchBatch && matchHighYield;
+      return true;
     });
-  }, [topics, searchQuery, selectedSubject, selectedSubspecialty, selectedStatus, selectedPriority, selectedBatch, showHighYieldOnly]);
+  }, [
+    topics, 
+    searchQuery, 
+    selectedSubject, 
+    selectedSubspecialty, 
+    selectedStatus, 
+    selectedPriority, 
+    selectedBatch, 
+    showHighYieldOnly
+  ]);
 
-  // Sorted list computation
+  // Sort topics
   const sortedTopics = useMemo(() => {
     return [...filteredTopics].sort((a, b) => {
-      if (sortBy === 'alphabetical') {
+      if (sortBy === 'ALPHABETICAL') {
         return a.topicName.localeCompare(b.topicName);
       }
-      if (sortBy === 'status') {
-        const orderStatus = {
-          [StudyStatus.NOT_STARTED]: 0,
-          [StudyStatus.IN_PROGRESS]: 1,
-          [StudyStatus.DONE]: 2
-        };
-        return orderStatus[a.status] - orderStatus[b.status];
+
+      if (sortBy === 'BATCH') {
+        const batchDiff = a.batch.localeCompare(b.batch);
+        if (batchDiff !== 0) return batchDiff;
+        return a.topicName.localeCompare(b.topicName);
       }
 
-      // Default Sort Order: Layered priority sort
-      // Layer 1: Posting Priority (🔴 HIGH -> 🟡 ADVANCE PREP -> 🟢 UPCOMING)
+      // Default: PRIORITY - HIGH -> ADVANCE_PREP -> UPCOMING
       const priorityOrder = {
         [StudyPriority.HIGH]: 0,
         [StudyPriority.ADVANCE_PREP]: 1,
         [StudyPriority.UPCOMING]: 2
       };
-      if (priorityOrder[a.priority] !== priorityOrder[b.priority]) {
-        return priorityOrder[a.priority] - priorityOrder[b.priority];
-      }
+      
+      const priorityDiff = priorityOrder[a.priority] - priorityOrder[b.priority];
+      if (priorityDiff !== 0) return priorityDiff;
 
-      // Layer 2: Lecture Batch Priority (recent Medicine 2/3 and Surgery 2/3 rank higher than M1/S1)
+      // Secondary: Batch priority (M3/S3 higher than M1/S1)
       if (b.batchPriority !== a.batchPriority) {
         return b.batchPriority - a.batchPriority; // Descending
       }
 
-      // Tier: ⭐ High Yield tags appear first
+      // Tier: High Yield tags appear first
       if (a.highYield !== b.highYield) {
         return a.highYield ? -1 : 1;
       }
@@ -238,9 +262,9 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen p-4 sm:p-6 md:p-8 font-sans transition-colors duration-200">
+    <div className="min-h-screen bg-slate-50 text-slate-800 p-4 sm:p-6 md:p-8 font-sans transition-colors duration-200">
       <div className="max-w-7xl mx-auto">
-        {/* Main Countdown and Calendar Navigation Header */}
+        {/* Main Countdown and Header */}
         <DashboardHeader
           simulatedDate={simulatedDate}
           setSimulatedDate={setSimulatedDate}
@@ -248,170 +272,158 @@ export default function App() {
           setTheme={setTheme}
         />
 
-        {/* Syllabus Completion Statistics Grid */}
-        <StatsDashboard topics={topics} />
-
-        {/* Study Momentum and Daily Velocity Graph */}
-        <div className="mb-6">
-          <StudyMomentumChart topics={topics} simulatedDate={simulatedDate} />
-        </div>
-
-        {/* Modern Tabs Navigation - Study Planner tab comes before Search & Filter tab */}
-        <div id="navigation-tabs" className="flex border-b border-slate-800 mb-6 gap-2">
+        {/* Minimalist Segmented Tabs Navigation */}
+        <nav className="flex items-center gap-1.5 bg-slate-200/80 border border-slate-200 p-1.5 rounded-2xl mb-6 self-start w-fit shadow-2xs">
+          <button
+            id="tab-revision-timetable"
+            onClick={() => setActiveTab('revision')}
+            className={`px-4 py-2 text-xs font-semibold rounded-xl transition-all cursor-pointer flex items-center gap-2 ${
+              activeTab === 'revision'
+                ? 'bg-white text-indigo-950 shadow-xs border border-slate-200/60'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
+            }`}
+          >
+            <span>25-Day Revision</span>
+            <span className="text-[10px] text-indigo-700 bg-indigo-50 px-1.5 py-0.2 rounded font-mono font-bold">Oct 1–25</span>
+          </button>
           <button
             id="tab-study-planner"
             onClick={() => setActiveTab('planner')}
-            className={`flex items-center gap-2 px-5 py-3 text-xs font-black uppercase tracking-wider border-b-2 transition-all cursor-pointer ${
+            className={`px-4 py-2 text-xs font-semibold rounded-xl transition-all cursor-pointer flex items-center gap-2 ${
               activeTab === 'planner'
-                ? 'border-amber-500 text-amber-500 bg-amber-500/10'
-                : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/40'
+                ? 'bg-white text-indigo-950 shadow-xs border border-slate-200/60'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
             }`}
           >
-            <Calendar className="w-4 h-4 text-amber-500" />
-            15-Week Study Planner
+            <span>15-Week Study Planner</span>
           </button>
           <button
             id="tab-syllabus-search"
             onClick={() => setActiveTab('syllabus')}
-            className={`flex items-center gap-2 px-5 py-3 text-xs font-black uppercase tracking-wider border-b-2 transition-all cursor-pointer ${
+            className={`px-4 py-2 text-xs font-semibold rounded-xl transition-all cursor-pointer flex items-center gap-2 ${
               activeTab === 'syllabus'
-                ? 'border-amber-500 text-amber-500 bg-amber-500/10'
-                : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/40'
+                ? 'bg-white text-indigo-950 shadow-xs border border-slate-200/60'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
             }`}
           >
-            <Search className="w-4 h-4 text-amber-500" />
-            Search & Filter Syllabus
+            <span>Syllabus Directory</span>
           </button>
-        </div>
+        </nav>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Main Topics / Planner Container */}
-          <div className="lg:col-span-2 space-y-6">
-            {activeTab === 'planner' ? (
-              /* Primary View: 15-Week Study Planner calendar */
-              <DailyStudySchedule
-                topics={topics}
-                simulatedDate={simulatedDate}
-                onStatusChange={handleStatusChange}
-              />
-            ) : (
-              /* Primary View: Search & Filter Syllabus list */
-              <>
-                {/* Filter and Search Box */}
-                <FiltersSection
-                  searchQuery={searchQuery}
-                  setSearchQuery={setSearchQuery}
-                  selectedSubject={selectedSubject}
-                  setSelectedSubject={setSelectedSubject}
-                  selectedSubspecialty={selectedSubspecialty}
-                  setSelectedSubspecialty={setSelectedSubspecialty}
-                  selectedStatus={selectedStatus}
-                  setSelectedStatus={setSelectedStatus}
-                  selectedPriority={selectedPriority}
-                  setSelectedPriority={setSelectedPriority}
-                  selectedBatch={selectedBatch}
-                  setSelectedBatch={setSelectedBatch}
-                  showHighYieldOnly={showHighYieldOnly}
-                  setShowHighYieldOnly={setShowHighYieldOnly}
-                  sortBy={sortBy}
-                  setSortBy={setSortBy}
-                  availableSubspecialties={availableSubspecialties}
-                />
-
-                {/* List Heading and Actions */}
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                  <div>
-                    <h3 className="text-[10px] uppercase font-black text-slate-300 tracking-widest flex items-center gap-2">
-                      <Award className="w-4 h-4 text-amber-500" />
-                      Syllabus Topics List
-                      <span className="text-[9px] uppercase font-bold bg-slate-800 border border-slate-700 text-slate-300 px-2 py-0.5 rounded">
-                        {sortedTopics.length} Matches
-                      </span>
-                    </h3>
-                    <p className="text-[9px] uppercase font-bold text-slate-500 mt-1">
-                      Click statuses to cycle: Unread ➜ Studying ➜ Done.
-                    </p>
-                  </div>
-
-                  {/* Bulk actions */}
-                  <div className="flex flex-wrap gap-2 w-full sm:w-auto">
-                    {sortedTopics.length > 0 && (
-                      <button
-                        onClick={handleMarkFilteredAsDone}
-                        className="flex-1 sm:flex-initial text-[10px] uppercase font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 px-3 py-1.5 rounded transition-colors cursor-pointer flex items-center justify-center gap-1"
-                      >
-                        <CheckCircle2 className="w-3.5 h-3.5" />
-                        Mark Filtered Done
-                      </button>
-                    )}
-                    <button
-                      onClick={handleResetProgress}
-                      className="flex-1 sm:flex-initial text-[10px] uppercase font-bold bg-slate-900 text-slate-400 border border-slate-800 hover:bg-slate-800 hover:text-white px-3 py-1.5 rounded transition-colors cursor-pointer flex items-center justify-center gap-1"
-                    >
-                      <RotateCcw className="w-3.5 h-3.5" />
-                      Reset Progress
-                    </button>
-                  </div>
-                </div>
-
-                {/* Topics Render Grid */}
-                <div className="space-y-3">
-                  {sortedTopics.length > 0 ? (
-                    sortedTopics.map(topic => (
-                      <TopicCard
-                        key={topic.id}
-                        topic={topic}
-                        onStatusChange={handleStatusChange}
-                      />
-                    ))
-                  ) : (
-                    <div className="bg-slate-900 border border-slate-800 rounded-xl p-10 text-center shadow-sm">
-                      <Sparkles className="w-10 h-10 text-slate-600 mx-auto mb-3" />
-                      <p className="font-bold text-slate-300 text-xs uppercase tracking-wider">No matching syllabus lectures found</p>
-                      <p className="text-[11px] text-slate-500 mt-1">Try resetting or loosening your search filters to show more topics.</p>
-                    </div>
-                  )}
-                </div>
-              </>
-            )}
-          </div>
-
-          {/* Right sidebar widgets */}
+        {activeTab === 'revision' ? (
+          /* Primary View: 25-Day Revision Timetable (Starting Oct 1, Oct 26 Exam) */
+          <RevisionTimetable
+            topics={topics}
+            simulatedDate={simulatedDate}
+            onStatusChange={handleStatusChange}
+          />
+        ) : (
           <div className="space-y-6">
-            {/* Dynamic recommended daily planner */}
-            <StudyPlanWidget simulatedDate={simulatedDate} />
+            {/* Completion stats shown on Planner and Syllabus views */}
+            <StatsDashboard topics={topics} />
 
-            {/* Posting Schedule Timeline Banner */}
-            <PostingScheduleBanner simulatedDate={simulatedDate} />
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Main Topics / Planner Container */}
+              <div className="lg:col-span-2 space-y-6">
+                {activeTab === 'planner' ? (
+                  /* 15-Week Study Planner calendar */
+                  <>
+                    <DailyStudySchedule
+                      topics={topics}
+                      simulatedDate={simulatedDate}
+                      onStatusChange={handleStatusChange}
+                    />
+                    <div className="mt-6">
+                      <StudyMomentumChart topics={topics} simulatedDate={simulatedDate} />
+                    </div>
+                  </>
+                ) : (
+                  /* Search & Filter Syllabus list */
+                  <>
+                    <FiltersSection
+                      searchQuery={searchQuery}
+                      setSearchQuery={setSearchQuery}
+                      selectedSubject={selectedSubject}
+                      setSelectedSubject={setSelectedSubject}
+                      selectedSubspecialty={selectedSubspecialty}
+                      setSelectedSubspecialty={setSelectedSubspecialty}
+                      selectedStatus={selectedStatus}
+                      setSelectedStatus={setSelectedStatus}
+                      selectedPriority={selectedPriority}
+                      setSelectedPriority={setSelectedPriority}
+                      selectedBatch={selectedBatch}
+                      setSelectedBatch={setSelectedBatch}
+                      showHighYieldOnly={showHighYieldOnly}
+                      setShowHighYieldOnly={setShowHighYieldOnly}
+                      sortBy={sortBy}
+                      setSortBy={setSortBy}
+                      availableSubspecialties={availableSubspecialties}
+                    />
 
-            {/* Pro Study Tips */}
-            <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm">
-              <h4 className="text-[10px] uppercase font-black text-slate-300 tracking-widest pb-3 border-b border-slate-850 mb-4 flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-amber-500 fill-amber-500/20" />
-                LAUTECH Final MB Strategy
-              </h4>
-              <ul className="space-y-3 text-[11px] text-slate-400 leading-relaxed">
-                <li className="flex gap-2">
-                  <span className="text-amber-500 font-bold shrink-0">1.</span>
-                  <span><strong className="text-slate-200">Active Posting Focus:</strong> Never completely neglect Medicine or Surgery. Study them in the background (using 30% split) during CommMed!</span>
-                </li>
-                <li className="flex gap-2">
-                  <span className="text-amber-500 font-bold shrink-0">2.</span>
-                  <span><strong className="text-slate-200">Recency Advantage:</strong> Within Medicine and Surgery groups, focus first on <strong className="text-slate-300">M2/M3</strong> and <strong className="text-slate-300">S2/S3</strong> as they represent more recent lectures.</span>
-                </li>
-                <li className="flex gap-2">
-                  <span className="text-amber-500 font-bold shrink-0">3.</span>
-                  <span><strong className="text-slate-200">High-Yield Leverage:</strong> Subspecialties like <em className="text-slate-300">Cardiology, Nephrology, Urology, Trauma, and Epidemiology</em> historically carry the highest weight. Star-mark ⭐ these on your list.</span>
-                </li>
-                <li className="flex gap-2">
-                  <span className="text-amber-500 font-bold shrink-0">4.</span>
-                  <span><strong className="text-slate-200">Past Question Sync:</strong> Once a topic is marked as Completed, review relevant LAUTECH essay questions to test retention.</span>
-                </li>
-              </ul>
+                    {/* List Heading and Actions */}
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                      <div>
+                        <h3 className="text-xs font-medium text-zinc-300 flex items-center gap-2">
+                          <span>Syllabus Topics</span>
+                          <span className="text-zinc-500 font-normal">
+                            ({sortedTopics.length} lectures)
+                          </span>
+                        </h3>
+                        <p className="text-[11px] text-zinc-500 mt-0.5">
+                          Click status to cycle: Unread ➜ Studying ➜ Done.
+                        </p>
+                      </div>
+
+                      {/* Bulk actions */}
+                      <div className="flex items-center gap-2">
+                        {sortedTopics.length > 0 && (
+                          <button
+                            onClick={handleMarkFilteredAsDone}
+                            className="text-xs px-2.5 py-1.5 rounded-md bg-zinc-800 hover:bg-zinc-700 text-zinc-200 transition-colors cursor-pointer flex items-center gap-1.5"
+                          >
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                            <span>Mark Filtered Done</span>
+                          </button>
+                        )}
+                        <button
+                          onClick={handleResetProgress}
+                          className="text-xs px-2.5 py-1.5 rounded-md bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-zinc-200 transition-colors cursor-pointer flex items-center gap-1.5"
+                        >
+                          <RotateCcw className="w-3 h-3" />
+                          <span>Reset</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Topics Render Grid */}
+                    <div className="space-y-2.5">
+                      {sortedTopics.length > 0 ? (
+                        sortedTopics.map(topic => (
+                          <TopicCard
+                            key={topic.id}
+                            topic={topic}
+                            onStatusChange={handleStatusChange}
+                          />
+                        ))
+                      ) : (
+                        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-8 text-center">
+                          <p className="font-medium text-zinc-300 text-xs">No matching syllabus lectures found</p>
+                          <p className="text-[11px] text-zinc-500 mt-1">Try resetting or loosening your search filters.</p>
+                        </div>
+                      )}
+                    </div>
+                  </>
+                )}
+              </div>
+
+              {/* Right sidebar widgets */}
+              <div className="space-y-6">
+                <StudyPlanWidget simulatedDate={simulatedDate} />
+                <PostingScheduleBanner simulatedDate={simulatedDate} />
+              </div>
             </div>
           </div>
-        </div>
-
+        )}
       </div>
     </div>
   );

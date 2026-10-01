@@ -152,7 +152,15 @@ const medicine3Topics = [
   "Elderly abuse and neglect, Drug management in the elderly",
   "Diabetic kidney disease, hypertension and the kidney",
   "Cardiomyopathies",
-  "Carcinoma of the lungs"
+  "Carcinoma of the lungs",
+  "Schizophrenia, acute psychosis and delusional disorders",
+  "Major depressive disorder, bipolar affective disorder and suicide risk assessment",
+  "Anxiety disorders, obsessive-compulsive disorder and post-traumatic stress disorder (PTSD)",
+  "Organic mental disorders: Delirium, dementia and neuropsychiatric syndromes",
+  "Substance use disorders, alcoholism and drug dependence",
+  "Psychiatric emergencies: Acute agitation, neuroleptic malignant syndrome (NMS) and suicide",
+  "Psychopharmacology: Antipsychotics, antidepressants, lithium and anxiolytics",
+  "Somatoform disorders, dissociative disorders and consultation-liaison psychiatry"
 ];
 
 const surgery1Topics = [
@@ -558,64 +566,7 @@ function getSubspecialty(name: string, subject: SubjectType): string {
 }
 
 function getLecturer(name: string, sub: string, subject: SubjectType): string {
-  const lowerName = name.toLowerCase();
-
-  if (subject === SubjectType.MEDICINE) {
-    if (sub === "Nephrology") {
-      if (lowerName.includes("replace") || lowerName.includes("dialysis") || lowerName.includes("transplant")) return "Dr. Shitu";
-      return "Prof. O.E. Ayodele";
-    }
-    if (sub === "Cardiology") {
-      if (lowerName.includes("hyperten") || lowerName.includes("ecg") || lowerName.includes("myocarditis")) return "Dr. Shitu";
-      return "Prof. A.A. Akintunde";
-    }
-    if (sub === "Endocrinology") return "Prof. M.A. Olamoyegun";
-    if (sub === "Neurology") {
-      if (lowerName.includes("meningitis") || lowerName.includes("coma")) return "Dr. O. Oni";
-      return "Dr. Shitu";
-    }
-    if (sub === "Dermatology") return "Dr. G.M. Israel";
-    if (sub === "Pulmonology") return "Prof. M.O. Tanimowo";
-    if (sub === "Gastroenterology") return "Dr. M.M. Oje";
-    if (sub === "Psychiatry") return "Dr. Lasebikan";
-    return "Clinical Faculty";
-  } else if (subject === SubjectType.SURGERY) {
-    if (sub === "urology") {
-      if (lowerName.includes("calculi") || lowerName.includes("prostate") || lowerName.includes("scrotal")) return "Dr. Odeyemi";
-      return "Dr. Idowu";
-    }
-    if (sub === "orthopedics" || sub === "trauma/emergency surgery") {
-      if (lowerName.includes("fracture") || lowerName.includes("osteomyelitis")) return "Dr. Olanipekun";
-      if (lowerName.includes("spine") || lowerName.includes("back pain")) return "Prof. Ajaga";
-      return "Dr. Olatide";
-    }
-    if (sub === "neurosurgery") return "Dr. Adeleke";
-    if (sub === "paediatric surgery") return "Dr. Akinloye";
-    if (sub === "plastics") return "Dr. Onilede";
-    if (sub === "ENT") return "Dr. Adedayo";
-    if (sub === "anaesthesiology") return "Dr. Raji";
-    if (sub === "radiology") return "Dr. Adebayo";
-    if (sub === "Opthalmology") return "Dr. Olayemi";
-    return "Dr. Akanbi";
-  } else {
-    // Community Medicine
-    if (sub === "epidemiology") {
-      if (lowerName.includes("disaster")) return "Dr. Bada";
-      return "Dr. Israel";
-    }
-    if (sub === "biostatistics") {
-      if (lowerName.includes("proposal") || lowerName.includes("thesis") || lowerName.includes("research methods")) return "Prof. Durowade";
-      if (lowerName.includes("museum") || lowerName.includes("laboratory")) return "Dr. Akindele";
-      return "Prof. Egbewale";
-    }
-    if (sub === "environmental health") return "Dr. Olarewaju";
-    if (sub === "family & reproductive health (including school health services)") {
-      if (lowerName.includes("maternal") || lowerName.includes("child") || lowerName.includes("planning")) return "Prof. Olugbenga-Bello";
-      return "Dr. Ilori";
-    }
-    if (sub === "public health nutrition" || sub === "social and rehabilitate medicine") return "Dr. Ige";
-    return "Dr. Ilori";
-  }
+  return "";
 }
 
 function checkHighYield(name: string, sub: string): boolean {
