@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { Topic, StudyStatus } from '../types';
 import { REVISION_TIMETABLE, RevisionDay, TargetQuestion } from '../data/revisionPlan';
 import { TOP_TESTED_TOPICS } from '../data/pqRepository';
@@ -14,16 +14,26 @@ import {
   Pause,
   RotateCcw,
   Sparkles,
-  BookOpen,
-  Award,
-  ShieldCheck,
-  TrendingUp
+  Search,
+  X,
+  Flame,
+  Target,
+  BarChart3,
+  TrendingUp,
+  Layers,
+  ArrowRight
 } from 'lucide-react';
 
 interface RevisionTimetableProps {
   topics: Topic[];
   simulatedDate: Date;
   onStatusChange: (id: string, nextStatus: StudyStatus) => void;
+}
+
+interface StreakState {
+  activeDates: string[]; // YYYY-MM-DD
+  currentStreak: number;
+  longestStreak: number;
 }
 
 export default function RevisionTimetable({
@@ -37,6 +47,10 @@ export default function RevisionTimetable({
   // Selected day index (0 to 24, corresponding to Day 1 to Day 25)
   const [selectedDayIndex, setSelectedDayIndex] = useState<number>(0);
 
+  // Quick Search Query
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
   // Practiced PQ keys stored in localStorage
   const [practicedPQKeys, setPracticedPQKeys] = useState<string[]>(() => {
     try {
@@ -47,10 +61,51 @@ export default function RevisionTimetable({
     }
   });
 
+  // Study Streak State stored in localStorage
+  const [streakState, setStreakState] = useState<StreakState>(() => {
+    try {
+      const saved = localStorage.getItem('MBBS_STUDY_STREAK_V2');
+      if (saved) return JSON.parse(saved);
+    } catch {
+      // fallback
+    }
+    // Default seed with today active
+    const todayStr = '2026-10-01';
+    return {
+      activeDates: [todayStr],
+      currentStreak: 1,
+      longestStreak: 1
+    };
+  });
+
+  // Record an active study date to maintain streak
+  const recordStudyActivity = (dateStr?: string) => {
+    const todayKey = dateStr || simulatedDate.toISOString().split('T')[0];
+    setStreakState(prev => {
+      if (prev.activeDates.includes(todayKey)) return prev;
+
+      const newDates = [...prev.activeDates, todayKey].sort();
+      // Calculate streak
+      const newStreak = prev.currentStreak + 1;
+      const newLongest = Math.max(prev.longestStreak, newStreak);
+      const updated = {
+        activeDates: newDates,
+        currentStreak: newStreak,
+        longestStreak: newLongest
+      };
+      localStorage.setItem('MBBS_STUDY_STREAK_V2', JSON.stringify(updated));
+      return updated;
+    });
+  };
+
   const togglePracticedPQ = (key: string) => {
     setPracticedPQKeys(prev => {
-      const updated = prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key];
+      const isRemoving = prev.includes(key);
+      const updated = isRemoving ? prev.filter(k => k !== key) : [...prev, key];
       localStorage.setItem('MBBS_PRACTICED_PQS', JSON.stringify(updated));
+      if (!isRemoving) {
+        recordStudyActivity();
+      }
       return updated;
     });
   };
@@ -106,6 +161,12 @@ export default function RevisionTimetable({
     return `${mins.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   };
 
+  // Jump to Today Action
+  const handleJumpToToday = () => {
+    setSelectedDayIndex(currentSimulatedDayIndex);
+    setViewMode('detailed');
+  };
+
   const activeDay = REVISION_TIMETABLE[selectedDayIndex] || REVISION_TIMETABLE[0];
 
   // Helper to map daily session keywords to real syllabus topics in state
@@ -142,7 +203,93 @@ export default function RevisionTimetable({
         onStatusChange(t.id, StudyStatus.DONE);
       }
     });
+    recordStudyActivity();
   };
+
+  // Quick Search Matching across all 25 days
+  const searchResults = useMemo(() => {
+    if (!searchQuery.trim()) return [];
+    const q = searchQuery.toLowerCase().trim();
+
+    return REVISION_TIMETABLE.map((day, idx) => {
+      const matches: string[] = [];
+
+      if (day.dailyTheme.toLowerCase().includes(q)) matches.push(`Theme: ${day.dailyTheme}`);
+      if (day.clinicalPearl.toLowerCase().includes(q)) matches.push(`Pearl: ${day.clinicalPearl.slice(0, 80)}...`);
+
+      // Sessions & PQs
+      const morningPq = day.sessions.morning.targetPq;
+      if (day.sessions.morning.title.toLowerCase().includes(q)) matches.push(`Morning: ${day.sessions.morning.title}`);
+      if (morningPq?.key.toLowerCase().includes(q) || morningPq?.topicClue.toLowerCase().includes(q)) {
+        matches.push(`Morning PQ: ${morningPq?.key} — ${morningPq?.topicClue}`);
+      }
+
+      const afternoonPq = day.sessions.afternoon.targetPq;
+      if (day.sessions.afternoon.title.toLowerCase().includes(q)) matches.push(`Afternoon: ${day.sessions.afternoon.title}`);
+      if (afternoonPq?.key.toLowerCase().includes(q) || afternoonPq?.topicClue.toLowerCase().includes(q)) {
+        matches.push(`Afternoon PQ: ${afternoonPq?.key} — ${afternoonPq?.topicClue}`);
+      }
+
+      const eveningPq = day.sessions.evening.targetPq;
+      if (day.sessions.evening.title.toLowerCase().includes(q)) matches.push(`Evening: ${day.sessions.evening.title}`);
+      if (eveningPq?.key.toLowerCase().includes(q) || eveningPq?.topicClue.toLowerCase().includes(q)) {
+        matches.push(`Evening PQ: ${eveningPq?.key} — ${eveningPq?.topicClue}`);
+      }
+
+      // Objectives
+      const allObjectives = [
+        ...day.sessions.morning.keyObjectives,
+        ...day.sessions.afternoon.keyObjectives,
+        ...day.sessions.evening.keyObjectives
+      ];
+      const matchedObj = allObjectives.find(o => o.toLowerCase().includes(q));
+      if (matchedObj) matches.push(`Concept: ${matchedObj}`);
+
+      if (matches.length > 0) {
+        return {
+          day,
+          dayIndex: idx,
+          matches
+        };
+      }
+      return null;
+    }).filter(Boolean) as { day: RevisionDay; dayIndex: number; matches: string[] }[];
+  }, [searchQuery]);
+
+  // Overall Revision Progress Metrics (75 PQs total, 25 days)
+  const totalPQs = 75;
+  const practicedCount = practicedPQKeys.length;
+  const pqProgressPercent = Math.min(100, Math.round((practicedCount / totalPQs) * 100));
+
+  // Compute days where at least 1 PQ was practiced
+  const daysWithPracticedPQ = useMemo(() => {
+    let count = 0;
+    REVISION_TIMETABLE.forEach(day => {
+      const mDone = day.sessions.morning.targetPq && practicedPQKeys.includes(day.sessions.morning.targetPq.key);
+      const aDone = day.sessions.afternoon.targetPq && practicedPQKeys.includes(day.sessions.afternoon.targetPq.key);
+      const eDone = day.sessions.evening.targetPq && practicedPQKeys.includes(day.sessions.evening.targetPq.key);
+      if (mDone || aDone || eDone) count++;
+    });
+    return count;
+  }, [practicedPQKeys]);
+  const daysPercent = Math.min(100, Math.round((daysWithPracticedPQ / 25) * 100));
+
+  // 7-Day Study Streak Visualizer Strip
+  const streakStrip = useMemo(() => {
+    const days: { dateStr: string; dayName: string; isActive: boolean; isToday: boolean }[] = [];
+    const baseDate = new Date(simulatedDate);
+
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(baseDate);
+      d.setDate(baseDate.getDate() - i);
+      const dateStr = d.toISOString().split('T')[0];
+      const dayName = d.toLocaleDateString('en-US', { weekday: 'narrow' });
+      const isActive = streakState.activeDates.includes(dateStr);
+      const isToday = i === 0;
+      days.push({ dateStr, dayName, isActive, isToday });
+    }
+    return days;
+  }, [simulatedDate, streakState.activeDates]);
 
   // Helper component to render a target past question card
   const renderPqCard = (pq?: TargetQuestion, label: string = 'Recommended Past Question') => {
@@ -150,7 +297,7 @@ export default function RevisionTimetable({
     const isDone = practicedPQKeys.includes(pq.key);
 
     return (
-      <div className="mt-3.5 pt-3 border-t border-slate-200/80 bg-white/90 rounded-xl p-3.5 border border-slate-200 shadow-2xs">
+      <div className="mt-3.5 pt-3 border-t border-slate-200/80 bg-white/95 rounded-xl p-3.5 border border-slate-200 shadow-2xs">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
           <div>
             <div className="text-[10px] font-semibold text-indigo-700 uppercase tracking-wider">
@@ -220,8 +367,9 @@ export default function RevisionTimetable({
 
   return (
     <div className="space-y-6">
-      {/* Top Controls: View Selector & Priority Summary */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200">
+      {/* Top Controls: View Selector, Search Bar & Priority Breakdown */}
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-3 border-b border-slate-200">
+        {/* View switcher tabs */}
         <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
           <button
             onClick={() => setViewMode('detailed')}
@@ -241,7 +389,7 @@ export default function RevisionTimetable({
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
-            25-Day Full Roadmap
+            25-Day Roadmap ({practicedCount}/75)
           </button>
           <button
             onClick={() => setViewMode('frequencies')}
@@ -251,23 +399,219 @@ export default function RevisionTimetable({
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
-            High-Yield Frequencies
+            Exam Frequencies
           </button>
         </div>
 
-        {/* Cohesive Time Allocation Pill */}
-        <div className="flex items-center gap-2 text-xs text-slate-700 bg-white border border-slate-200 px-3 py-1.5 rounded-xl shadow-2xs flex-wrap">
-          <span className="font-semibold text-indigo-900">1. Medicine &amp; Psych (5h · 50%)</span>
-          <span className="text-slate-300">/</span>
-          <span className="font-semibold text-slate-800">2. Surgery (3.5h · 35%)</span>
-          <span className="text-slate-300">/</span>
-          <span className="font-semibold text-slate-600">3. Comm Med &amp; PQ (2h · 15%)</span>
+        {/* Quick Search Bar */}
+        <div className="relative flex-1 max-w-md">
+          <div className="relative flex items-center">
+            <Search className="w-4 h-4 text-slate-400 absolute left-3 pointer-events-none" />
+            <input
+              ref={searchInputRef}
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Quick search topics, PQs, or mnemonics (e.g. Schizophrenia, Q2 Jan 2025)..."
+              className="w-full bg-white border border-slate-200 rounded-xl pl-9 pr-8 py-1.5 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-indigo-500 shadow-2xs transition-colors"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-2.5 text-slate-400 hover:text-slate-600 cursor-pointer"
+                title="Clear search"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
+
+          {/* Quick Search Floating Results Dropdown */}
+          {searchQuery.trim() && (
+            <div className="absolute top-full left-0 right-0 mt-1.5 bg-white border border-slate-200 rounded-xl shadow-lg z-30 max-h-80 overflow-y-auto p-2 space-y-1.5">
+              <div className="flex items-center justify-between px-2 py-1 text-[11px] font-semibold text-slate-500 border-b border-slate-100">
+                <span>Search Matches ({searchResults.length} days found)</span>
+                <span className="text-[10px] text-slate-400">Click to jump to day</span>
+              </div>
+
+              {searchResults.length > 0 ? (
+                searchResults.map(({ day, dayIndex, matches }) => (
+                  <button
+                    key={day.dayNumber}
+                    onClick={() => {
+                      setSelectedDayIndex(dayIndex);
+                      setViewMode('detailed');
+                      setSearchQuery('');
+                    }}
+                    className="w-full text-left p-2.5 rounded-lg hover:bg-indigo-50/70 transition-colors border border-transparent hover:border-indigo-100 cursor-pointer group"
+                  >
+                    <div className="flex items-center justify-between text-xs font-bold text-slate-900 mb-0.5">
+                      <span className="group-hover:text-indigo-700">
+                        Day {day.dayNumber} ({day.shortDateLabel}): {day.dailyTheme}
+                      </span>
+                      <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-indigo-600 shrink-0 ml-1" />
+                    </div>
+                    <div className="text-[11px] text-slate-500 line-clamp-1">
+                      {matches[0]}
+                    </div>
+                  </button>
+                ))
+              ) : (
+                <div className="p-4 text-center text-xs text-slate-500">
+                  No revision topics match "{searchQuery}". Try another keyword or question code.
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Jump to Today Button (Prominently accessible) */}
+        {selectedDayIndex !== currentSimulatedDayIndex && (
+          <button
+            onClick={handleJumpToToday}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-2xs transition-all cursor-pointer shrink-0 animate-pulse"
+            title="Snap immediately to current day"
+          >
+            <Target className="w-3.5 h-3.5" />
+            <span>Jump to Today (Day {currentSimulatedDayIndex + 1})</span>
+          </button>
+        )}
+      </div>
+
+      {/* Aesthetic Progress Bar & Study Streak Visualizer Panel */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* Card 1 & 2: Revision Progress Bar */}
+        <div className="md:col-span-2 bg-white border border-slate-200 rounded-2xl p-5 shadow-xs space-y-3.5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <div className="flex items-center gap-2">
+                <BarChart3 className="w-4 h-4 text-indigo-600" />
+                <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+                  Revision Progress &amp; PQ Mastery
+                </h3>
+              </div>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Targeting 75 authentic exam past questions across the 25-day schedule.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-3 text-xs font-semibold">
+              <span className="text-indigo-700 bg-indigo-50 border border-indigo-200 px-2.5 py-1 rounded-lg">
+                {practicedCount} / 75 PQs Practiced ({pqProgressPercent}%)
+              </span>
+              <span className="text-slate-600 bg-slate-100 border border-slate-200 px-2.5 py-1 rounded-lg">
+                {daysWithPracticedPQ} / 25 Days Active ({daysPercent}%)
+              </span>
+            </div>
+          </div>
+
+          {/* Unified Progress Bar */}
+          <div className="space-y-1.5">
+            <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden flex border border-slate-200/80">
+              <div
+                className="bg-indigo-600 h-full transition-all duration-500"
+                style={{ width: `${pqProgressPercent}%` }}
+                title={`PQs Practiced: ${pqProgressPercent}%`}
+              ></div>
+              <div
+                className="bg-indigo-300 h-full transition-all duration-500"
+                style={{ width: `${Math.max(0, daysPercent - pqProgressPercent)}%` }}
+                title={`Days Covered: ${daysPercent}%`}
+              ></div>
+            </div>
+
+            {/* 4 Exam Phases Milestone Indicators */}
+            <div className="grid grid-cols-4 text-[10px] text-slate-400 font-medium pt-0.5">
+              <div className="border-l border-slate-200 pl-1.5">
+                <span className="block font-semibold text-slate-700">Phase 1</span>
+                <span>Days 1–7 (Foundations)</span>
+              </div>
+              <div className="border-l border-slate-200 pl-1.5">
+                <span className="block font-semibold text-slate-700">Phase 2</span>
+                <span>Days 8–14 (Subspecialties)</span>
+              </div>
+              <div className="border-l border-slate-200 pl-1.5">
+                <span className="block font-semibold text-slate-700">Phase 3</span>
+                <span>Days 15–21 (Complex Cases)</span>
+              </div>
+              <div className="border-l border-slate-200 pl-1.5">
+                <span className="block font-semibold text-slate-700">Phase 4</span>
+                <span>Days 22–25 (Exam Sprint)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Card 3: Study Streak Visualizer */}
+        <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs flex flex-col justify-between space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5">
+              <div className="w-7 h-7 rounded-lg bg-indigo-50 border border-indigo-200 text-indigo-700 flex items-center justify-center font-bold">
+                <Flame className="w-4 h-4 fill-indigo-600 text-indigo-600" />
+              </div>
+              <div>
+                <span className="text-xs font-bold text-slate-900 block leading-tight">
+                  Study Streak
+                </span>
+                <span className="text-[10px] text-slate-500">
+                  Daily consistency
+                </span>
+              </div>
+            </div>
+
+            <div className="text-right">
+              <div className="text-base font-extrabold text-indigo-700 font-mono">
+                {streakState.currentStreak} Days
+              </div>
+              <div className="text-[10px] text-slate-400 font-medium">
+                Best: {streakState.longestStreak}d
+              </div>
+            </div>
+          </div>
+
+          {/* 7-Day Streak Blocks Strip */}
+          <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-2.5">
+            <div className="flex items-center justify-between text-center gap-1">
+              {streakStrip.map((item, idx) => (
+                <div key={idx} className="flex-1 flex flex-col items-center">
+                  <span className="text-[9px] font-bold text-slate-400 mb-1">
+                    {item.dayName}
+                  </span>
+                  <div
+                    className={`w-6 h-6 rounded-lg flex items-center justify-center transition-all ${
+                      item.isActive
+                        ? 'bg-indigo-600 text-white shadow-2xs'
+                        : item.isToday
+                        ? 'bg-indigo-50 border-2 border-indigo-400 text-indigo-700'
+                        : 'bg-white border border-slate-200 text-slate-300'
+                    }`}
+                    title={`${item.dateStr}: ${item.isActive ? 'Studied' : 'Pending'}`}
+                  >
+                    {item.isActive ? (
+                      <Flame className="w-3 h-3 fill-white text-white" />
+                    ) : item.isToday ? (
+                      <span className="w-1.5 h-1.5 rounded-full bg-indigo-600"></span>
+                    ) : (
+                      <span className="w-1 h-1 rounded-full bg-slate-200"></span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <button
+            onClick={() => recordStudyActivity()}
+            className="w-full py-1 text-[11px] font-semibold text-indigo-700 hover:text-indigo-900 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors cursor-pointer border border-indigo-200"
+          >
+            ✓ Check-in Today's Study Session
+          </button>
         </div>
       </div>
 
       {viewMode === 'detailed' ? (
         <div className="space-y-6">
-          {/* Day Navigation Bar */}
+          {/* Day Navigation Bar with Jump to Today */}
           <div className="bg-white border border-slate-200 rounded-2xl p-3 flex items-center justify-between gap-2 shadow-xs overflow-x-auto">
             <button
               onClick={() => setSelectedDayIndex(prev => Math.max(0, prev - 1))}
@@ -325,14 +669,14 @@ export default function RevisionTimetable({
           <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
-                <div className="flex items-center gap-2 text-xs text-slate-500">
+                <div className="flex items-center gap-2 text-xs text-slate-500 flex-wrap">
                   <span className="font-bold text-indigo-700">Day {activeDay.dayNumber} of 25</span>
                   <span className="text-slate-300">·</span>
                   <span>{activeDay.dateLabel}</span>
                   {selectedDayIndex === currentSimulatedDayIndex && (
                     <>
                       <span className="text-slate-300">·</span>
-                      <span className="text-indigo-700 font-semibold bg-indigo-50 px-1.5 py-0.5 rounded">Today</span>
+                      <span className="text-indigo-700 font-semibold bg-indigo-50 px-2 py-0.5 rounded">Today</span>
                     </>
                   )}
                   <span className="text-slate-300">·</span>
@@ -343,8 +687,18 @@ export default function RevisionTimetable({
                 </h2>
               </div>
 
-              {/* Progress & Focus Timer */}
-              <div className="flex items-center gap-3">
+              {/* Progress & Focus Timer & Jump to Today Button */}
+              <div className="flex items-center gap-2.5 flex-wrap">
+                {selectedDayIndex !== currentSimulatedDayIndex && (
+                  <button
+                    onClick={handleJumpToToday}
+                    className="text-xs px-3 py-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold border border-indigo-200 transition-colors cursor-pointer flex items-center gap-1.5"
+                  >
+                    <Target className="w-3.5 h-3.5" />
+                    <span>Jump to Today</span>
+                  </button>
+                )}
+
                 {activeDayTotal > 0 && (
                   <div className="text-xs text-slate-600 text-right">
                     <span className="font-semibold text-slate-900">{activeDayCompleted}/{activeDayTotal}</span> topics mastered
@@ -353,9 +707,9 @@ export default function RevisionTimetable({
                 {activeDayTotal > 0 && activeDayCompleted < activeDayTotal && (
                   <button
                     onClick={handleMarkDayDone}
-                    className="text-xs px-3 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-medium transition-colors cursor-pointer border border-indigo-200"
+                    className="text-xs px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 font-medium transition-colors cursor-pointer"
                   >
-                    Mark topics completed
+                    Mark topics done
                   </button>
                 )}
                 <button
@@ -556,8 +910,19 @@ export default function RevisionTimetable({
                 All 25 days with 3 targeted past questions per day (75 total PQs mapped to finalmbpq).
               </p>
             </div>
-            <div className="text-xs font-semibold text-indigo-700 bg-indigo-50 border border-indigo-200 px-3 py-1.5 rounded-lg">
-              {practicedPQKeys.length} / 75 Past Question Drills Completed
+            <div className="flex items-center gap-3">
+              {selectedDayIndex !== currentSimulatedDayIndex && (
+                <button
+                  onClick={handleJumpToToday}
+                  className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white transition-colors cursor-pointer flex items-center gap-1.5"
+                >
+                  <Target className="w-3.5 h-3.5" />
+                  <span>Jump to Today</span>
+                </button>
+              )}
+              <div className="text-xs font-semibold text-indigo-700 bg-indigo-50 border border-indigo-200 px-3 py-1.5 rounded-lg">
+                {practicedCount} / 75 Past Question Drills Completed
+              </div>
             </div>
           </div>
 
@@ -575,11 +940,12 @@ export default function RevisionTimetable({
               <tbody className="divide-y divide-slate-100">
                 {REVISION_TIMETABLE.map((day, idx) => {
                   const isToday = idx === currentSimulatedDayIndex;
+                  const isSelected = idx === selectedDayIndex;
                   return (
                     <tr
                       key={day.dayNumber}
                       className={`hover:bg-slate-50/80 transition-colors ${
-                        isToday ? 'bg-indigo-50/30' : ''
+                        isToday ? 'bg-indigo-50/30' : isSelected ? 'bg-slate-50' : ''
                       }`}
                     >
                       <td className="py-3.5 px-3 whitespace-nowrap">
