@@ -12,7 +12,7 @@ import StudyTipModal from './components/StudyTipModal';
 import Footer from './components/Footer';
 import { getTopicRevisionRole } from './data/mcqSatelliteData';
 
-import { RotateCcw, CheckCircle2, BookOpen, Layers, Sparkles } from 'lucide-react';
+import { RotateCcw, CheckCircle2, BookOpen, Layers, Sparkles, Bookmark } from 'lucide-react';
 
 const LOCAL_STORAGE_KEY = 'MBBS_STUDY_TRACKER_STATUS_V2';
 
@@ -279,6 +279,15 @@ export default function App() {
   };
 
   const [isStudyTipOpen, setIsStudyTipOpen] = useState(false);
+  const [studyTipTab, setStudyTipTab] = useState<'daily' | 'bookmarks'>('daily');
+  const [bookmarkedTipsCount, setBookmarkedTipsCount] = useState<number>(() => {
+    try {
+      const saved = localStorage.getItem('MBBS_BOOKMARKED_STUDY_TIPS');
+      return saved ? JSON.parse(saved).length : 0;
+    } catch {
+      return 0;
+    }
+  });
 
   const currentDayNumber = useMemo(() => {
     const startMs = new Date('2026-10-01T00:00:00').getTime();
@@ -331,23 +340,47 @@ export default function App() {
               </button>
             </nav>
 
-            {/* Space-Saving Pop-up Trigger Button */}
-            <button
-              onClick={() => setIsStudyTipOpen(true)}
-              className="px-3.5 py-2 rounded-2xl bg-gradient-to-r from-indigo-600 via-indigo-700 to-violet-700 hover:from-indigo-700 hover:to-violet-800 text-white text-xs font-semibold shadow-xs hover:shadow-sm transition-all cursor-pointer flex items-center gap-2 self-start sm:self-auto"
-              title="Open Gemini AI clinical study strategy pop-up"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
-              <span>Study Tip of the Day</span>
-              <span className="text-[9px] bg-white/20 px-1.5 py-0.5 rounded font-mono">AI</span>
-            </button>
+            {/* Space-Saving Pop-up Trigger Buttons */}
+            <div className="flex items-center gap-2 flex-wrap self-start sm:self-auto">
+              <button
+                onClick={() => {
+                  setStudyTipTab('daily');
+                  setIsStudyTipOpen(true);
+                }}
+                className="px-3.5 py-2 rounded-2xl bg-gradient-to-r from-indigo-600 via-indigo-700 to-violet-700 hover:from-indigo-700 hover:to-violet-800 text-white text-xs font-semibold shadow-xs hover:shadow-sm transition-all cursor-pointer flex items-center gap-2"
+                title="Open Gemini AI clinical study strategy pop-up"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
+                <span>Study Tip of the Day</span>
+                <span className="text-[9px] bg-white/20 px-1.5 py-0.5 rounded font-mono">AI</span>
+              </button>
+
+              {bookmarkedTipsCount > 0 && (
+                <button
+                  onClick={() => {
+                    setStudyTipTab('bookmarks');
+                    setIsStudyTipOpen(true);
+                  }}
+                  className="px-3 py-2 rounded-2xl border border-amber-300 dark:border-amber-700/80 bg-amber-50 dark:bg-amber-950/60 hover:bg-amber-100 dark:hover:bg-amber-900/60 text-amber-900 dark:text-amber-200 text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs"
+                  title="View your saved clinical pearls and mnemonics"
+                >
+                  <Bookmark className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 fill-amber-500/20" />
+                  <span>Saved Pearls</span>
+                  <span className="text-[10px] font-mono px-1.5 py-0.2 rounded-full bg-amber-200/80 dark:bg-amber-800/80 font-bold">
+                    {bookmarkedTipsCount}
+                  </span>
+                </button>
+              )}
+            </div>
           </div>
 
-          {/* Study Tip Modal Pop-up */}
+          {/* Study Tip Modal Pop-up with Daily & Bookmarks Tabs */}
           <StudyTipModal
             isOpen={isStudyTipOpen}
             onClose={() => setIsStudyTipOpen(false)}
             dayNumber={currentDayNumber}
+            initialTab={studyTipTab}
+            onBookmarksChange={setBookmarkedTipsCount}
           />
 
           {activeTab === 'revision' ? (

@@ -48,12 +48,11 @@ Return ONLY a valid JSON object (no markdown code blocks, no backticks, no pream
   "mnemonic": "A short high-yield mnemonic or rule of thumb (or null if not applicable)"
 }`;
 
-      // Try gemini-2.5-flash first for high speed and availability, with fallback to gemini-3.8-flash
-      const modelsToTry = ['gemini-2.5-flash', 'gemini-3.8-flash'];
-      for (const modelName of modelsToTry) {
+      // Use gemini-3.8-flash as recommended
+      for (let attempt = 1; attempt <= 2; attempt++) {
         try {
           const response = await ai.models.generateContent({
-            model: modelName,
+            model: 'gemini-3.8-flash',
             contents: prompt,
             config: {
               temperature: 0.8,
@@ -71,12 +70,15 @@ Return ONLY a valid JSON object (no markdown code blocks, no backticks, no pream
                   ...parsed,
                   category: requestedFocus
                 },
-                source: `gemini (${modelName})`
+                source: 'gemini (gemini-3.8-flash)'
               });
             }
           }
         } catch (modelErr: any) {
-          console.warn(`Model ${modelName} call failed, trying next:`, modelErr?.message || modelErr);
+          console.warn(`Attempt ${attempt} for gemini-3.8-flash failed:`, modelErr?.message || modelErr);
+          if (attempt < 2) {
+            await new Promise(r => setTimeout(r, 500));
+          }
         }
       }
     }
