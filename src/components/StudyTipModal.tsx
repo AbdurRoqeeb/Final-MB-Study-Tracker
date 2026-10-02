@@ -9,14 +9,7 @@ import {
   BrainCircuit,
   Award
 } from 'lucide-react';
-
-interface StudyTip {
-  title: string;
-  category: string;
-  content: string;
-  clinicalTakeaway: string;
-  mnemonic?: string | null;
-}
+import { getRandomCuratedTip, StudyTip } from '../data/curatedStudyTips';
 
 interface StudyTipModalProps {
   isOpen: boolean;
@@ -35,17 +28,21 @@ export default function StudyTipModal({
   const [loading, setLoading] = useState<boolean>(false);
   const [isSaved, setIsSaved] = useState<boolean>(false);
   const [selectedFocus, setSelectedFocus] = useState<string>('General High-Yield Exam Strategy');
+  const [tipSource, setTipSource] = useState<string>('Gemini AI');
 
   const focusOptions = [
     { label: 'General Strategy', value: 'General High-Yield Exam Strategy' },
-    { label: 'OSCE and viva', value: 'OSCE and Viva Clinical Examination and Patient Presentation' },
-    { label: 'Surgery & Emergencies', value: 'Surgery Emergency and Acute Abdomen Traps' },
-    { label: 'Pharmacology & Dosing', value: 'High-Yield Pharmacology and Drug Dosing' },
-    { label: 'Time & Exam Pacing', value: 'Speed and Time Allocation for Written Exam Scripts' },
+    { label: 'OSCE and viva', value: 'OSCE and viva' },
+    { label: 'Surgery & Emergencies', value: 'Surgery & Emergencies' },
+    { label: 'Pharmacology & Dosing', value: 'Pharmacology & Dosing' },
+    { label: 'Time & Exam Pacing', value: 'Time & Exam Pacing' },
   ];
 
-  const fetchTip = async (focus?: string) => {
+  const fetchTip = async (focusCategory?: string, excludeTitle?: string) => {
+    const targetFocus = focusCategory || selectedFocus;
+    const currentExclude = excludeTitle || tip?.title;
     setLoading(true);
+
     try {
       const res = await fetch('/api/study-tip', {
         method: 'POST',
@@ -53,9 +50,10 @@ export default function StudyTipModal({
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          focusArea: focus || selectedFocus,
+          focusArea: targetFocus,
           dayTheme: dayTheme || 'Clinical Examination Revision',
           simulatedDay: dayNumber || 1,
+          excludeTitle: currentExclude,
         }),
       });
 
@@ -65,25 +63,33 @@ export default function StudyTipModal({
 
       const data = await res.json();
       if (data && data.tip) {
-        setTip(data.tip);
+        // If the tip is identical to what was just shown, rotate to a fresh one
+        if (data.tip.title === currentExclude) {
+          const fresh = getRandomCuratedTip(targetFocus, currentExclude);
+          setTip(fresh);
+          setTipSource('High-Yield Bank');
+        } else {
+          setTip(data.tip);
+          setTipSource(data.source?.includes('gemini') ? 'Gemini AI' : 'High-Yield Bank');
+        }
         setIsSaved(false);
+        setLoading(false);
+        return;
       }
     } catch (err) {
-      console.warn('Could not fetch Gemini study tip from server, using fallback:', err);
-      setTip({
-        title: "The 3-Step Differential Formula for Medical OSCE & Viva",
-        category: "OSCE and viva",
-        content: "When presenting differentials in your Medicine OSCE and viva, always structure them anatomically or etiologically (VINDICATE schema). Never offer more than 3 high-probability differentials unless specifically probed by examiners.",
-        clinicalTakeaway: "State your most likely diagnosis first, supported by 2 positive clinical signs and 1 pertinent negative.",
-        mnemonic: "VINDICATE: Vascular, Infectious, Neoplastic, Degenerative, Iatrogenic, Congenital, Autoimmune, Trauma, Endocrine."
-      });
-    } finally {
-      setLoading(false);
+      console.warn('Server study tip fetch unavailable, using dynamic clinical bank:', err);
     }
+
+    // Fallback: guaranteed fresh tip from the comprehensive curated clinical repository
+    const fallback = getRandomCuratedTip(targetFocus, currentExclude);
+    setTip(fallback);
+    setTipSource('High-Yield Bank');
+    setIsSaved(false);
+    setLoading(false);
   };
 
   useEffect(() => {
-    if (isOpen && !tip) {
+    if (isOpen) {
       fetchTip();
     }
   }, [isOpen, dayNumber]);
@@ -101,7 +107,11 @@ export default function StudyTipModal({
 
   const handleFocusChange = (newFocus: string) => {
     setSelectedFocus(newFocus);
-    fetchTip(newFocus);
+    fetchTip(newFocus, tip?.title);
+  };
+
+  const handleNextTip = () => {
+    fetchTip(selectedFocus, tip?.title);
   };
 
   if (!isOpen) return null;
@@ -124,7 +134,7 @@ export default function StudyTipModal({
                   Study Tip of the Day
                 </h3>
                 <span className="text-[10px] font-semibold text-indigo-700 dark:text-indigo-300 bg-indigo-100/70 dark:bg-indigo-950 border border-indigo-200 dark:border-indigo-800 px-1.5 py-0.2 rounded font-mono">
-                  Gemini AI
+                  {tipSource}
                 </span>
               </div>
               <p className="text-[11px] text-slate-500 dark:text-slate-400">
@@ -179,9 +189,10 @@ export default function StudyTipModal({
 
             <div className="self-end">
               <button
-                onClick={() => fetchTip()}
+                onClick={handleNextTip}
                 disabled={loading}
-                className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-[#131929] hover:bg-indigo-50 dark:hover:bg-indigo-950 text-slate-700 dark:text-slate-200 text-xs font-semibold transition-colors cursor-pointer flex items-center gap-1.5 disabled:opacity-50"
+                className="px-3.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-indigo-50/80 dark:bg-[#131929] hover:bg-indigo-100 dark:hover:bg-indigo-950 text-indigo-700 dark:text-indigo-300 text-xs font-semibold transition-colors cursor-pointer flex items-center gap-1.5 disabled:opacity-50 shadow-2xs"
+                title="Generate or rotate to a fresh clinical tip"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-indigo-600' : ''}`} />
                 <span>Next Tip</span>
@@ -193,7 +204,7 @@ export default function StudyTipModal({
             <div className="py-8 flex flex-col items-center justify-center space-y-2 text-center">
               <BrainCircuit className="w-7 h-7 text-indigo-600 dark:text-indigo-400 animate-pulse" />
               <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-                Formulating high-yield MBBS revision strategy with Gemini...
+                Formulating high-yield clinical tip...
               </p>
             </div>
           ) : tip ? (
@@ -241,7 +252,10 @@ export default function StudyTipModal({
         </div>
 
         {/* Footer */}
-        <div className="p-3 bg-slate-50 dark:bg-[#101626] border-t border-slate-100 dark:border-slate-800 flex justify-end">
+        <div className="p-3 bg-slate-50 dark:bg-[#101626] border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+          <span className="text-[10px] text-slate-400 dark:text-slate-500 font-mono">
+            Rotates automatically on every refresh
+          </span>
           <button
             onClick={onClose}
             className="px-4 py-1.5 text-xs font-semibold rounded-xl bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors cursor-pointer"
