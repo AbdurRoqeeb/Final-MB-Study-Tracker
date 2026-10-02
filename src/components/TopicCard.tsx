@@ -1,5 +1,6 @@
 import React from 'react';
 import { Topic, StudyStatus } from '../types';
+import { getTopicRevisionRole } from '../data/mcqSatelliteData';
 import { CheckCircle2, Circle, Clock } from 'lucide-react';
 
 interface TopicCardProps {
@@ -10,6 +11,7 @@ interface TopicCardProps {
 
 export default function TopicCard({ topic, onStatusChange }: TopicCardProps) {
   const { id, subject, batch, topicName, subspecialty, highYield, status } = topic;
+  const revisionRole = getTopicRevisionRole(topicName, subject);
 
   // Cycle statuses: NOT_STARTED -> IN_PROGRESS -> DONE -> NOT_STARTED
   const handleStatusCycle = () => {
@@ -60,7 +62,15 @@ export default function TopicCard({ topic, onStatusChange }: TopicCardProps) {
           {highYield && (
             <>
               <span className="text-slate-300 dark:text-slate-700">·</span>
-              <span className="text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/80 border border-indigo-200 dark:border-indigo-700/80 px-1.5 py-0.2 rounded text-[10px] font-bold">High Yield</span>
+              <span className="text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/80 border border-amber-200 dark:border-amber-800/80 px-1.5 py-0.2 rounded text-[10px] font-bold">High Yield</span>
+            </>
+          )}
+          {revisionRole.role === 'MCQ' && (
+            <>
+              <span className="text-slate-300 dark:text-slate-700">·</span>
+              <span className="text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/80 border border-indigo-200 dark:border-indigo-800/80 px-1.5 py-0.2 rounded text-[10px] font-bold font-mono">
+                ⚡ {revisionRole.label}
+              </span>
             </>
           )}
         </div>

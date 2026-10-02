@@ -31,8 +31,8 @@ export default function DashboardHeader({
   ], []);
 
   return (
-    <header className="bg-white dark:bg-[#0d121f] border border-slate-200/80 dark:border-slate-800 rounded-2xl px-6 py-5 mb-6 shadow-xs transition-colors">
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+    <header className="bg-white dark:bg-[#0d121f] border border-slate-200/80 dark:border-slate-800 rounded-2xl px-5 py-3.5 mb-4 shadow-xs transition-colors">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         {/* Brand & Context */}
         <div>
           <div className="flex items-center gap-2.5">

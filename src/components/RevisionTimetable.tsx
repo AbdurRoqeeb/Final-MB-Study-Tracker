@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { Topic, StudyStatus } from '../types';
 import { REVISION_TIMETABLE, RevisionDay, TargetQuestion } from '../data/revisionPlan';
 import { TOP_TESTED_TOPICS } from '../data/pqRepository';
+import McqGroupedSatelliteCard from './McqGroupedSatelliteCard';
 import {
   Calendar,
   ChevronLeft,
@@ -765,6 +766,13 @@ export default function RevisionTimetable({
               </p>
             </div>
           </div>
+
+          {/* Daily MCQ Grouped Satellite Topics Component */}
+          <McqGroupedSatelliteCard
+            dayNumber={activeDay.dayNumber}
+            topics={topics}
+            onStatusChange={onStatusChange}
+          />
 
           {/* Three Prioritized Sessions with Target PQs in Every Block */}
           <div className="space-y-4">
