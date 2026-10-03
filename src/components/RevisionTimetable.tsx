@@ -786,6 +786,9 @@ export default function RevisionTimetable({
                   <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">
                     Internal Medicine &amp; Psychiatry
                   </span>
+                  <span className="text-[10px] font-mono font-semibold text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/80 px-2 py-0.5 rounded border border-indigo-200 dark:border-indigo-800">
+                    4.0h Core Essay · 1.0h (60m) MCQ Cluster
+                  </span>
                 </div>
                 <span className="text-xs font-mono font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-[#131929] px-2 py-0.5 rounded border dark:border-slate-800">
                   8:00 AM – 1:00 PM (5.0 Hours)
@@ -828,6 +831,9 @@ export default function RevisionTimetable({
                   <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">
                     Surgery &amp; Operative Principles
                   </span>
+                  <span className="text-[10px] font-mono font-semibold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800/90 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700">
+                    2.75h Core Operative · 45m MCQ Cluster
+                  </span>
                 </div>
                 <span className="text-xs font-mono font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-[#131929] px-2 py-0.5 rounded border dark:border-slate-800">
                   2:00 PM – 5:30 PM (3.5 Hours)
@@ -869,6 +875,9 @@ export default function RevisionTimetable({
                   </span>
                   <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">
                     Community Medicine &amp; Evening Drill
+                  </span>
+                  <span className="text-[10px] font-mono font-semibold text-sky-700 dark:text-sky-300 bg-sky-50 dark:bg-sky-950/80 px-2 py-0.5 rounded border border-sky-200 dark:border-sky-800">
+                    1.25h Core Public Health · 45m MCQ Questions &amp; Drill
                   </span>
                 </div>
                 <span className="text-xs font-mono font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-[#131929] px-2 py-0.5 rounded border dark:border-slate-800">
